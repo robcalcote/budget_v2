@@ -1,5 +1,4 @@
 from flask import Flask
-# escapemarkup is broken... not really sure why, I think it might be a Q thing.
 
 app = Flask(__name__)
 
