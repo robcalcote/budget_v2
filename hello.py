@@ -10,44 +10,36 @@ app = Flask(__name__)
 def index():
     return 'Home Page'
 
-@app.route('/transactions')
+@app.route('/transactions', methods=['GET'])
 def transactions():
-	# need to include endpoints for GET
     return f'All Transactions'
 
-@app.route('/transaction/<uuid:id>')
+@app.route('/transaction/<uuid:id>', methods=['POST', 'PUT', 'GET', 'DELETE'])
 def transaction(id):
-	# need to include endpoints for GET, POST, PUT, DELETE
     return f'Transaction id #{id}'
 
-@app.route('/categories')
+@app.route('/categories', methods=['GET'])
 def categories():
-	# need to include endpoints for GET
     return f'All Categories'
 
-@app.route('/category/<int:id>')
+@app.route('/category/<int:id>', methods=['POST', 'PUT', 'GET', 'DELETE'])
 def category(id):
-	# need to include endpoints for GET, POST, PUT, DELETE
     return f'Category id #{id}'
 
-@app.route('/months')
+@app.route('/months', methods=['GET'])
 def months():
-	# need to include endpoints for GET
     return f'All Months'
 
-@app.route('/month/<int:id>')
+@app.route('/month/<int:id>', methods=['POST', 'PUT', 'GET', 'DELETE'])
 def month(id):
-	# need to include endpoints for GET, POST, PUT, DELETE
     return f'Month # {id}'
 
-@app.route('/users')
+@app.route('/users', methods=['GET'])
 def users():
-	# need to include endpoints for GET
 	return f'All Users'
 
-@app.route('/user/<int:id>')
+@app.route('/user/<int:id>', methods=['POST', 'PUT', 'GET', 'DELETE'])
 def user(id):
-	# need to include endpoints for GET, POST, PUT, DELETE
 	return f'User # {id}'
 
 # as you can see, you can reference the function and get the name of the url route
