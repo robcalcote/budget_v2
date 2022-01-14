@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block header %}
+  <h1>{% block title %}Transactions{% endblock %}</h1>
+  {% if g.user %}
+    <a class="action" href="{{ url_for('transactions.create') }}">New</a>
+  {% endif %}
+{% endblock %}
+
+{% block content %}
+  {% for t in transactions %}
+    <article class="transaction">
+      <header>
+        <div>
+          <h1>{{ t['Organization'] }}</h1>
+          <div class="about">by {{ t['first_name'] }} on {{ t['Date'].strftime('%Y-%m-%d %T') }}</div>
+        </div>
+        <a class="action" href="{{ url_for('transactions.update', id=t['id']) }}">Edit</a>
+      </header>
+      <p class="body">{{ t['Amount'] }}</p>
+    </article>
+    {% if not loop.last %}
+      <hr>
+    {% endif %}
+  {% endfor %}
+{% endblock %}

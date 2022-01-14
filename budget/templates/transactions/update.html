@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block header %}
+  <h1>{% block title %}Edit Transaction: "{{ t['Organization'] }}"{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+  <form method="post">
+    <label for="organization">Transaction Location</label>
+    <input name="organization" id="organization" value="{{ request.form['organization'] or t['Organization'] }}" required>
+    <label for="amount">Amount</label>
+    <input name="amount" id="amount" value="{{ request.form['amount'] or t['Amount'] }}" required>
+    <input type="submit" value="Save">
+  </form>
+  <hr>
+  <form action="{{ url_for('transactions.delete', id=t['id']) }}" method="post">
+    <input class="danger" type="submit" value="Delete" onclick="return confirm('Are you sure?');">
+  </form>
+{% endblock %}
