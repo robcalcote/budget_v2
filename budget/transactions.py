@@ -27,8 +27,8 @@ def get_transaction(id, check_author=True):
 def index():
     db = get_db()
     transactions = db.execute(
-        'SELECT t.id, t.UserId, t.Organization, t.Amount, t.Date, u.FirstName, u.LastName'
-        ' FROM Transactions t JOIN Users u ON t.UserId = u.id'
+        'SELECT t.id, t.UserId, t.Organization, t.Amount, t.Date'
+        ' FROM Transactions t'
         ' ORDER BY t.Date DESC'
     ).fetchall()
     return render_template('transactions/index.html', transactions=transactions)
@@ -95,6 +95,6 @@ def update(id):
 def delete(id):
     get_transaction(id)
     db = get_db()
-    db.execute('DELETE FROM post WHERE id = ?', (id,))
+    db.execute('DELETE FROM Transactions WHERE id = ?', (id,))
     db.commit()
     return redirect(url_for('transactions.index'))

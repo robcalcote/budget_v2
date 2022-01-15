@@ -13,7 +13,7 @@
       <header>
         <div>
           <h1>{{ t['Organization'] }}</h1>
-          <div class="about">by {{ t['first_name'] }} on {{ t['Date'].strftime('%Y-%m-%d %T') }}</div>
+          <div class="about">On {{ t['Date'].strftime('%Y-%m-%d %T') }}</div>
         </div>
         <a class="action" href="{{ url_for('transactions.update', id=t['id']) }}">Edit</a>
       </header>

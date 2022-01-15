@@ -6,7 +6,7 @@
 
 {% block content %}
   <form method="post">
-    <label for="organization">Transaction Location</label>
+    <label for="organization">Location</label>
     <input name="organization" id="organization" value="{{ request.form['organization'] }}" required>
     <label for="amount">Amount</label>
     <input name="amount" id="amount" value="{{ request.form['amount'] }}" required>
