@@ -1,4 +1,5 @@
 import pytest
+import datetime
 from budget.db import get_db
 
 
@@ -9,10 +10,13 @@ def test_index(client, auth):
 
     auth.login()
     response = client.get('/')
+    date = str.encode('On ' + str(datetime.datetime.now().date()))
     assert b'Log Out' in response.data
-    assert b'test title' in response.data
-    assert b'by test on 2018-01-01' in response.data
-    assert b'test\nbody' in response.data
+    assert b'Transactions - Budget' in response.data
+    assert b'Costco' in response.data
+    assert date in response.data
+    assert b'Edit' in response.data
+    assert b'102.56' in response.data
     assert b'href="/1/update"' in response.data
 
 
@@ -38,33 +42,34 @@ def test_exists_required(client, auth, path):
 def test_create(client, auth, app):
     auth.login()
     assert client.get('/create').status_code == 200
-    client.post('/create', data={'title': 'created', 'body': ''})
+    client.post('/create', data={'organization': 'test_org', 'amount': '123.45'})
 
     with app.app_context():
         db = get_db()
-        count = db.execute('SELECT COUNT(id) FROM post').fetchone()[0]
+        count = db.execute('SELECT COUNT(id) FROM Transactions').fetchone()[0]
         assert count == 2
 
 
 def test_update(client, auth, app):
     auth.login()
     assert client.get('/1/update').status_code == 200
-    client.post('/1/update', data={'title': 'updated', 'body': ''})
+    client.post('/1/update', data={'organization': 'updated', 'amount': '123'})
 
     with app.app_context():
         db = get_db()
-        post = db.execute('SELECT * FROM post WHERE id = 1').fetchone()
-        assert post['title'] == 'updated'
+        post = db.execute('SELECT * FROM Transactions WHERE id = 1').fetchone()
+        assert post['organization'] == 'updated'
 
 
 @pytest.mark.parametrize('path', (
     '/create',
     '/1/update',
 ))
-def test_create_update_validate(client, auth, path):
+def test_create_update_validate_no_org(client, auth, path):
     auth.login()
-    response = client.post(path, data={'title': '', 'body': ''})
-    assert b'Title is required.' in response.data
+    response = client.post(path, data={'organization': '', 'amount': '123'})
+    assert b'Location is required' in response.data
+
 
 
 def test_delete(client, auth, app):
@@ -74,5 +79,5 @@ def test_delete(client, auth, app):
 
     with app.app_context():
         db = get_db()
-        post = db.execute('SELECT * FROM post WHERE id = 1').fetchone()
+        post = db.execute('SELECT * FROM Transactions WHERE id = 1').fetchone()
         assert post is None

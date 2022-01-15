@@ -43,7 +43,7 @@ def create():
         error = None
 
         if not org:
-            error = 'Transaction location is required'
+            error = 'Location is required'
         if not amount:
             error = 'Amount is required'
         if error is not None:
@@ -72,7 +72,7 @@ def update(id):
         error = None
 
         if not org:
-            error = 'Transaction location is required.'
+            error = 'Location is required.'
         if not amount:
             error = 'Amount is required'
         if error is not None:
