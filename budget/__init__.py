@@ -1,20 +1,40 @@
 import os
 
 from flask import (
-    Flask, render_template
+    Flask, render_template, g, jsonify
 )
+from flask_mysqldb import MySQL
 
-from . import db
+import credentials as c
+
 from . import auth
 from . import transactions
+from . import db
 
 def create_app(test_config=None):
     # create and configure the app
-    app = Flask(__name__, instance_relative_config=True)
-    app.config.from_mapping(
-        SECRET_KEY='dev',
-        DATABASE=os.path.join(app.instance_path, 'budget.sqlite'),
-    )
+    app = Flask(__name__)
+    app.config['MYSQL_USER'] = c.USERNAME
+    app.config['MYSQL_PASSWORD'] = c.LOCAL_DB_PASSWORD
+    app.config['MYSQL_HOST'] = '127.0.0.1'
+    app.config['MYSQL_PORT'] = 3306
+    app.config['MYSQL_DB'] = 'budget'
+    app.config['MYSQL_CURSORCLASS'] = 'DictCursor'
+    mysql = MySQL(app)
+
+    @app.route('/transactions')
+    def hello_world():
+        cursor = mysql.connection.cursor()
+        cursor.execute('''SELECT * FROM Transactions''')
+        results = cursor.fetchall()
+        return jsonify(results)
+
+    @app.route('/transactions/<int:id>', methods=('GET', 'POST'))
+    def index(id):
+        cursor = mysql.connection.cursor()
+        cursor.execute(f'SELECT * FROM Transactions WHERE id = {id}')
+        results = cursor.fetchone()
+        return jsonify(results)
 
     if test_config is None:
         # load the instance config, if it exists, when not testing
@@ -29,35 +49,6 @@ def create_app(test_config=None):
     except OSError:
         pass
 
-    # @app.route('/transaction/<uuid:id>', methods=['POST', 'PUT', 'GET', 'DELETE'])
-    # def transaction(id):
-    #     return f'Transaction id #{id}'
-
-    # @app.route('/categories', methods=['GET'])
-    # def categories():
-    #     return f'All Categories'
-
-    # @app.route('/category/<int:id>', methods=['POST', 'PUT', 'GET', 'DELETE'])
-    # def category(id):
-    #     return f'Category id #{id}'
-
-    # @app.route('/months', methods=['GET'])
-    # def months():
-    #     return f'All Months'
-
-    # @app.route('/month/<int:id>', methods=['POST', 'PUT', 'GET', 'DELETE'])
-    # def month(id):
-    #     return f'Month # {id}'
-
-    # @app.route('/users', methods=['GET'])
-    # def users():
-    #     return f'All Users'
-
-    # @app.route('/user/<int:id>', methods=['POST', 'PUT', 'GET', 'DELETE'])
-    # def user(id):
-    #     return f'User # {id}'
-
-    db.init_app(app)
     app.register_blueprint(auth.bp)
     app.register_blueprint(transactions.bp)
     app.add_url_rule('/', endpoint='index')
