@@ -7,9 +7,9 @@
 {% block content %}
   <form method="post">
     <label for="organization">Transaction Location</label>
-    <input name="organization" id="organization" value="{{ request.form['organization'] or t['Organization'] }}" required>
+    <input name="organization" id="organization" value="{{ request.form['organization'] or t['Organization'] }}">
     <label for="amount">Amount</label>
-    <input name="amount" id="amount" value="{{ request.form['amount'] or t['Amount'] }}" required>
+    <input name="amount" id="amount" value="{{ request.form['amount'] or t['Amount'] }}">
     <input type="submit" value="Save">
   </form>
   <hr>
