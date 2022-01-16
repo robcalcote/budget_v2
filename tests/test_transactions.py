@@ -1,6 +1,6 @@
 import pytest
 import datetime
-from budget.db import get_db
+from flask_mysqldb import MySQL
 
 
 def test_index(client, auth):
@@ -10,7 +10,7 @@ def test_index(client, auth):
 
     auth.login()
     response = client.get('/')
-    date = str.encode('On ' + str(datetime.datetime.now().date()))
+    date = str.encode('On ' + str(datetime.datetime.utcnow().date()))
     assert b'Log Out' in response.data
     assert b'Transactions - Budget' in response.data
     assert b'Costco' in response.data
@@ -45,7 +45,7 @@ def test_create(client, auth, app):
     client.post('/create', data={'organization': 'test_org', 'amount': '123.45'})
 
     with app.app_context():
-        db = get_db()
+        db = MySQL().connection.cursor()
         count = db.execute('SELECT COUNT(id) FROM Transactions').fetchone()[0]
         assert count == 2
 
@@ -56,7 +56,7 @@ def test_update(client, auth, app):
     client.post('/1/update', data={'organization': 'updated', 'amount': '123'})
 
     with app.app_context():
-        db = get_db()
+        db = MySQL().connection.cursor()
         post = db.execute('SELECT * FROM Transactions WHERE id = 1').fetchone()
         assert post['organization'] == 'updated'
 
@@ -65,11 +65,19 @@ def test_update(client, auth, app):
     '/create',
     '/1/update',
 ))
-def test_create_update_validate_no_org(client, auth, path):
+def test_create_update_validate_no_organization(client, auth, path):
     auth.login()
     response = client.post(path, data={'organization': '', 'amount': '123'})
     assert b'Location is required' in response.data
 
+@pytest.mark.parametrize('path', (
+    '/create',
+    '/1/update',
+))
+def test_create_update_validate_no_amount(client, auth, path):
+    auth.login()
+    response = client.post(path, data={'organization': 'test_org', 'amount': ''})
+    assert b'Amount is required' in response.data
 
 
 def test_delete(client, auth, app):
@@ -78,6 +86,7 @@ def test_delete(client, auth, app):
     assert response.headers['Location'] == 'http://localhost/'
 
     with app.app_context():
-        db = get_db()
-        post = db.execute('SELECT * FROM Transactions WHERE id = 1').fetchone()
+        db = MySQL().connection.cursor()
+        db.execute("SELECT * FROM Transactions WHERE id = 1")
+        post = db.fetchone()
         assert post is None

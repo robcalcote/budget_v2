@@ -1,22 +1,24 @@
 import functools
 
 from flask import (
-    Blueprint, flash, g, redirect, render_template, request, session, url_for
+    Blueprint, flash, g, current_app, redirect, render_template, request, session, url_for
 )
 from werkzeug.security import check_password_hash, generate_password_hash
 
-from budget.db import get_db
+from flask_mysqldb import MySQL
+from . import db
 
 bp = Blueprint('auth', __name__, url_prefix='/auth')
 
 @bp.route('/register', methods=('GET', 'POST'))
 def register():
     if request.method == 'POST':
-        username = request.form['username']
-        password = request.form['password']
         first_name = request.form['first_name']
         last_name = request.form['last_name']
-        db = get_db()
+        username = request.form['username']
+        password = request.form['password']
+        d = db.get_db(current_app)
+        cursor = db.get_cursor()
         error = None
 
         if not first_name:
@@ -30,11 +32,14 @@ def register():
 
         if error is None:
             try:
-                db.execute(
-                    "INSERT INTO Users (Active, FirstName, LastName, Username, Password) VALUES (True, ?, ?, ?, ?)",
-                    (first_name, last_name, username, generate_password_hash(password)),
+                cursor.execute(
+                    f"INSERT INTO Users (Active, FirstName, LastName, Username, Password)" +
+                    f" VALUES (True, '{first_name}', '{last_name}', '{username}', '{generate_password_hash(password)}')"
                 )
-                db.commit()
+                print('inserted!')
+                print(cursor.fetchall())
+                d.commit()
+                d.close()
             except db.IntegrityError:
                 error = f"User {username} is already registered."
             else:
@@ -49,21 +54,22 @@ def login():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
-        db = get_db()
+        db = MySQL().connection.cursor()
         error = None
-        user = db.execute(
-            'SELECT * FROM Users WHERE Username = ?', (username,)
-        ).fetchone()
+        db.execute(
+            f"SELECT * FROM Users WHERE Username = '{username}'"
+        )
+        user = db.fetchone()
 
         if user is None:
             error = 'Incorrect username.'
-        elif not check_password_hash(user['Password'], password):
-            error = 'Incorrect password.'
+        if user['Password'] != password:
+            error = 'Incorrect password'
 
         if error is None:
             session.clear()
-            session['user_id'] = user['id']
-            return redirect(url_for('index'))
+            session['user_id'] = user['Id']
+            return redirect(url_for('transactions.index'))
 
         flash(error)
 
@@ -76,9 +82,11 @@ def load_logged_in_user():
     if user_id is None:
         g.user = None
     else:
-        g.user = get_db().execute(
-            'SELECT * FROM Users WHERE id = ?', (user_id,)
-        ).fetchone()
+        db = MySQL().connection.cursor()
+        db.execute(
+            f"SELECT * FROM Users WHERE id = {user_id}"
+        )
+        g.user = db.fetchone()
 
 @bp.route('/logout')
 def logout():

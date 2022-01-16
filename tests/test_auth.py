@@ -1,6 +1,7 @@
 import pytest
 from flask import g, session
-from budget.db import get_db
+
+from flask_mysqldb import MySQL
 
 
 def test_register(client, app):
@@ -16,7 +17,7 @@ def test_register(client, app):
     assert 'http://localhost/auth/login' == response.headers['Location']
 
     with app.app_context():
-        assert get_db().execute(
+        assert MySQL().connection.cursor().execute(
             "SELECT * FROM Users WHERE Username = 'a'",
         ).fetchone() is not None
 

@@ -1,13 +1,15 @@
 import sqlite3
 
 import pytest
-from budget.db import get_db
+
+from flask_mysqldb import MySQL
+
 
 
 def test_get_close_db(app):
     with app.app_context():
-        db = get_db()
-        assert db is get_db()
+        db = MySQL().connection.cursor()
+        assert db is MySQL().connection.cursor()
 
     with pytest.raises(sqlite3.ProgrammingError) as e:
         db.execute('SELECT 1')

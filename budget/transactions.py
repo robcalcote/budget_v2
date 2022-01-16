@@ -1,36 +1,39 @@
 import datetime
 
 from flask import (
-    Blueprint, flash, g, redirect, render_template, request, url_for
+    Blueprint, flash, g, current_app, redirect, render_template, request, url_for
 )
+from flask_mysqldb import MySQL
 from werkzeug.exceptions import abort
 
 from budget.auth import login_required
-from budget.db import get_db
 
 bp = Blueprint('transactions', __name__)
 
 def get_transaction(id, check_author=True):
-    t = get_db().execute(
-        'SELECT t.id, t.Organization, t.Amount, t.Date'
+    db = MySQL().connection.cursor()
+    db.execute(
+        'SELECT t.id, t.Location, t.Amount, t.Date'
         ' FROM Transactions t '
         ' WHERE t.id = ?',
         (id,)
-    ).fetchone()
+    )
+    transaction = db.fetchone()
 
-    if t is None:
+    if transaction is None:
         abort(404, f"Transaction id {id} doesn't exist.")
 
-    return t
+    return transaction
 
 @bp.route('/')
 def index():
-    db = get_db()
-    transactions = db.execute(
-        'SELECT t.id, t.UserId, t.Organization, t.Amount, t.Date'
+    db = MySQL().connection.cursor()
+    db.execute(
+        'SELECT t.id, t.UserId, t.Location, t.Amount, t.Date'
         ' FROM Transactions t'
         ' ORDER BY t.Date DESC'
-    ).fetchall()
+    )
+    transactions = db.fetchall()
     return render_template('transactions/index.html', transactions=transactions)
 
 @bp.route('/create', methods=('GET', 'POST'))
@@ -38,8 +41,8 @@ def index():
 def create():
     if request.method == 'POST':
         org = request.form['organization']
-        amount = float(request.form['amount'])
-        date = datetime.datetime.now()
+        amount = request.form['amount']
+        date = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         error = None
 
         if not org:
@@ -50,13 +53,11 @@ def create():
             flash(error)
 
         else:
-            db = get_db()
+            db = MySQL().connection.cursor()
             db.execute(
-                'INSERT INTO Transactions (UserId, CategoryId, MonthId, Organization, Amount, Date)'
-                ' VALUES (1, 1, 1, ?, ?, ?)',
-                (org, amount, date)
+                f"INSERT INTO Transactions (UserId, CategoryId, MonthId, Location, Amount, Date)" +
+                f" VALUES (1, 1, 1, '{org}', {float(amount)}, '{date}')"
             )
-            db.commit()
             return redirect(url_for('transactions.index'))
 
     return render_template('transactions/create.html')
@@ -79,13 +80,12 @@ def update(id):
             flash(error)
 
         else:
-            db = get_db()
+            db = MySQL().connection.cursor()
             db.execute(
                 'UPDATE Transactions SET Organization = ?, Amount = ?'
                 ' WHERE id = ?',
                 (org, amount, id)
             )
-            db.commit()
             return redirect(url_for('transactions.index'))
 
     return render_template('transactions/update.html', t=t)
@@ -94,7 +94,6 @@ def update(id):
 @login_required
 def delete(id):
     get_transaction(id)
-    db = get_db()
+    db = MySQL().connection.cursor()
     db.execute('DELETE FROM Transactions WHERE id = ?', (id,))
-    db.commit()
     return redirect(url_for('transactions.index'))

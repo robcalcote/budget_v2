@@ -3,7 +3,6 @@ import tempfile
 
 import pytest
 from budget import create_app
-from budget.db import get_db, init_db
 
 with open(os.path.join(os.path.dirname(__file__), 'data.sql'), 'rb') as f:
     _data_sql = f.read().decode('utf8')
@@ -18,25 +17,18 @@ def app():
         'DATABASE': db_path,
     })
 
-    with app.app_context():
-        init_db()
-        get_db().executescript(_data_sql)
-
     yield app
 
     os.close(db_fd)
     os.unlink(db_path)
 
-
 @pytest.fixture
 def client(app):
     return app.test_client()
 
-
 @pytest.fixture
 def runner(app):
     return app.test_cli_runner()
-
 
 class AuthActions(object):
     def __init__(self, client):
@@ -50,7 +42,6 @@ class AuthActions(object):
 
     def logout(self):
         return self._client.get('/auth/logout')
-
 
 @pytest.fixture
 def auth(client):

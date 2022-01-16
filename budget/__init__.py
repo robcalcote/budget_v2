@@ -7,31 +7,31 @@ from flask_mysqldb import MySQL
 
 import credentials as c
 
-from . import auth
-from . import transactions
-from . import db
-
 def create_app(test_config=None):
     # create and configure the app
     app = Flask(__name__)
+    app.secret_key = 'test secret key'
     app.config['MYSQL_USER'] = c.USERNAME
     app.config['MYSQL_PASSWORD'] = c.LOCAL_DB_PASSWORD
     app.config['MYSQL_HOST'] = '127.0.0.1'
     app.config['MYSQL_PORT'] = 3306
     app.config['MYSQL_DB'] = 'budget'
     app.config['MYSQL_CURSORCLASS'] = 'DictCursor'
-    mysql = MySQL(app)
-
+    
+    with app.app_context():
+        from . import db
+        g.db = db.get_db(app)
+    
     @app.route('/transactions')
-    def hello_world():
-        cursor = mysql.connection.cursor()
+    def transactions():
+        cursor = g.db.connection.cursor()
         cursor.execute('''SELECT * FROM Transactions''')
         results = cursor.fetchall()
         return jsonify(results)
 
     @app.route('/transactions/<int:id>', methods=('GET', 'POST'))
-    def index(id):
-        cursor = mysql.connection.cursor()
+    def transaction(id):
+        cursor = g.db.connection.cursor()
         cursor.execute(f'SELECT * FROM Transactions WHERE id = {id}')
         results = cursor.fetchone()
         return jsonify(results)
@@ -49,8 +49,12 @@ def create_app(test_config=None):
     except OSError:
         pass
 
-    app.register_blueprint(auth.bp)
-    app.register_blueprint(transactions.bp)
-    app.add_url_rule('/', endpoint='index')
+    with app.app_context():
+        from . import auth
+        from . import transactions
+        app.register_blueprint(auth.bp)
+        app.register_blueprint(transactions.bp)
+
+    app.add_url_rule('/', endpoint='transactions.index')
 
     return app
