@@ -13,10 +13,8 @@ bp = Blueprint('transactions', __name__)
 def get_transaction(id, check_author=True):
     db = MySQL().connection.cursor()
     db.execute(
-        'SELECT t.id, t.Location, t.Amount, t.Date'
-        ' FROM Transactions t '
-        ' WHERE t.id = ?',
-        (id,)
+        f"SELECT t.Id, t.Location, t.Amount, t.Date" +
+        f" FROM Transactions t WHERE t.Id = {id}"
     )
     transaction = db.fetchone()
 
@@ -29,7 +27,7 @@ def get_transaction(id, check_author=True):
 def index():
     db = MySQL().connection.cursor()
     db.execute(
-        'SELECT t.id, t.UserId, t.Location, t.Amount, t.Date'
+        'SELECT t.Id, t.UserId, t.Location, t.Amount, t.Date'
         ' FROM Transactions t'
         ' ORDER BY t.Date DESC'
     )
@@ -40,12 +38,12 @@ def index():
 @login_required
 def create():
     if request.method == 'POST':
-        org = request.form['organization']
+        loc = request.form['location']
         amount = request.form['amount']
         date = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         error = None
 
-        if not org:
+        if not loc:
             error = 'Location is required'
         if not amount:
             error = 'Amount is required'
@@ -56,7 +54,7 @@ def create():
             db = MySQL().connection.cursor()
             db.execute(
                 f"INSERT INTO Transactions (UserId, CategoryId, MonthId, Location, Amount, Date)" +
-                f" VALUES (1, 1, 1, '{org}', {float(amount)}, '{date}')"
+                f" VALUES (1, 1, 1, '{loc}', {float(amount)}, '{date}')"
             )
             return redirect(url_for('transactions.index'))
 
@@ -68,11 +66,11 @@ def update(id):
     t = get_transaction(id)
 
     if request.method == 'POST':
-        org = request.form['organization']
+        loc = request.form['location']
         amount = request.form['amount']
         error = None
 
-        if not org:
+        if not loc:
             error = 'Location is required.'
         if not amount:
             error = 'Amount is required'
@@ -82,9 +80,8 @@ def update(id):
         else:
             db = MySQL().connection.cursor()
             db.execute(
-                'UPDATE Transactions SET Organization = ?, Amount = ?'
-                ' WHERE id = ?',
-                (org, amount, id)
+                f"UPDATE Transactions SET Location = '{loc}', Amount = {amount}" +
+                f" WHERE id = {id}"
             )
             return redirect(url_for('transactions.index'))
 

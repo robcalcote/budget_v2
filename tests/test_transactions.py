@@ -42,7 +42,7 @@ def test_exists_required(client, auth, path):
 def test_create(client, auth, app):
     auth.login()
     assert client.get('/create').status_code == 200
-    client.post('/create', data={'organization': 'test_org', 'amount': '123.45'})
+    client.post('/create', data={'location': 'test_loc', 'amount': '123.45'})
 
     with app.app_context():
         db = MySQL().connection.cursor()
@@ -53,21 +53,21 @@ def test_create(client, auth, app):
 def test_update(client, auth, app):
     auth.login()
     assert client.get('/1/update').status_code == 200
-    client.post('/1/update', data={'organization': 'updated', 'amount': '123'})
+    client.post('/1/update', data={'location': 'updated', 'amount': '123'})
 
     with app.app_context():
         db = MySQL().connection.cursor()
-        post = db.execute('SELECT * FROM Transactions WHERE id = 1').fetchone()
-        assert post['organization'] == 'updated'
+        post = db.execute('SELECT * FROM Transactions WHERE Id = 1').fetchone()
+        assert post['location'] == 'updated'
 
 
 @pytest.mark.parametrize('path', (
     '/create',
     '/1/update',
 ))
-def test_create_update_validate_no_organization(client, auth, path):
+def test_create_update_validate_no_location(client, auth, path):
     auth.login()
-    response = client.post(path, data={'organization': '', 'amount': '123'})
+    response = client.post(path, data={'location': '', 'amount': '123'})
     assert b'Location is required' in response.data
 
 @pytest.mark.parametrize('path', (
@@ -76,7 +76,7 @@ def test_create_update_validate_no_organization(client, auth, path):
 ))
 def test_create_update_validate_no_amount(client, auth, path):
     auth.login()
-    response = client.post(path, data={'organization': 'test_org', 'amount': ''})
+    response = client.post(path, data={'location': 'test_loc', 'amount': ''})
     assert b'Amount is required' in response.data
 
 

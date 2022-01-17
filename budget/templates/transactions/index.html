@@ -12,10 +12,10 @@
     <article class="transaction">
       <header>
         <div>
-          <h1>{{ t['Organization'] }}</h1>
+          <h1>{{ t['Location'] }}</h1>
           <div class="about">On {{ t['Date'].strftime('%Y-%m-%d %T') }}</div>
         </div>
-        <a class="action" href="{{ url_for('transactions.update', id=t['id']) }}">Edit</a>
+        <a class="action" href="{{ url_for('transactions.update', id=t['Id']) }}">Edit</a>
       </header>
       <p class="body">{{ t['Amount'] }}</p>
     </article>
