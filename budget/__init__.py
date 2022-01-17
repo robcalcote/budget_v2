@@ -23,6 +23,7 @@ def create_app(test_config=None):
         from . import db
         g.db = db.get_db(app)
     
+    # Do not test
     @app.route('/transactions')
     def transactions():
         curs = MySQL().connection.cursor()
@@ -30,6 +31,7 @@ def create_app(test_config=None):
         results = curs.fetchall()
         return jsonify(results)
 
+    # Do not test
     @app.route('/transactions/<int:id>', methods=('GET', 'POST'))
     def transaction(id):
         curs = MySQL().connection.cursor()
