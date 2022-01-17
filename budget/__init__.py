@@ -14,8 +14,7 @@ def create_app(test_config=None):
     app.secret_key = 'test secret key'
     app.config['MYSQL_USER'] = c.USERNAME
     app.config['MYSQL_PASSWORD'] = c.LOCAL_DB_PASSWORD
-    app.config['MYSQL_HOST'] = '127.0.0.1'
-    app.config['MYSQL_PORT'] = 3306
+    app.config['MYSQL_HOST'] = 'localhost'
     app.config['MYSQL_DB'] = 'budget'
     app.config['MYSQL_CURSORCLASS'] = 'DictCursor'
     

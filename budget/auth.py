@@ -36,7 +36,6 @@ def register():
                     f" VALUES (True, '{first_name}', '{last_name}', '{username}', '{generate_password_hash(password)}')"
                 )
                 conn.commit()
-                conn.close()
             except curs.IntegrityError:
                 error = f"User {username} is already registered."
             else:

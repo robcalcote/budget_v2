@@ -58,7 +58,6 @@ def create():
                 f" VALUES (10, 1, 1, '{loc}', {float(amount)}, '{date}')"
             )
             conn.commit()
-            conn.close()
             return redirect(url_for('transactions.index'))
 
     return render_template('transactions/create.html')
@@ -86,7 +85,6 @@ def update(id):
             query = f"UPDATE Transactions SET Location = '{loc}', Amount = {amount} WHERE Id = {id}"
             curs.execute(query)
             conn.commit()
-            conn.close()
             return redirect(url_for('transactions.index'))
 
     return render_template('transactions/update.html', t=t)
@@ -99,5 +97,4 @@ def delete(id):
     curs = conn.cursor()
     curs.execute(f"DELETE FROM Transactions WHERE Id = {id}")
     conn.commit()
-    conn.close()
     return redirect(url_for('transactions.index'))
