@@ -1,0 +1,4 @@
+include budget/schema.sql
+graft budget/static
+graft budget/templates
+global-exclude *.pyc
