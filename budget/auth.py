@@ -6,7 +6,6 @@ from flask import (
 from werkzeug.security import check_password_hash, generate_password_hash
 
 from flask_mysqldb import MySQL
-from . import db
 
 bp = Blueprint('auth', __name__, url_prefix='/auth')
 
@@ -17,8 +16,8 @@ def register():
         last_name = request.form['last_name']
         username = request.form['username']
         password = request.form['password']
-        d = db.get_db(current_app)
-        cursor = db.get_cursor()
+        conn = MySQL().connection
+        curs = conn.cursor()
         error = None
 
         if not first_name:
@@ -32,15 +31,13 @@ def register():
 
         if error is None:
             try:
-                cursor.execute(
+                curs.execute(
                     f"INSERT INTO Users (Active, FirstName, LastName, Username, Password)" +
                     f" VALUES (True, '{first_name}', '{last_name}', '{username}', '{generate_password_hash(password)}')"
                 )
-                print('inserted!')
-                print(cursor.fetchall())
-                d.commit()
-                d.close()
-            except db.IntegrityError:
+                conn.commit()
+                conn.close()
+            except curs.IntegrityError:
                 error = f"User {username} is already registered."
             else:
                 return redirect(url_for("auth.login"))
@@ -61,10 +58,8 @@ def login():
         )
         user = db.fetchone()
 
-        if user is None:
-            error = 'Incorrect username.'
-        if user['Password'] != password:
-            error = 'Incorrect password'
+        if (user is None) or (not check_password_hash(user['Password'], password)):
+            error = 'Incorrect username or password'
 
         if error is None:
             session.clear()
@@ -91,7 +86,7 @@ def load_logged_in_user():
 @bp.route('/logout')
 def logout():
     session.clear()
-    return redirect(url_for('index'))
+    return redirect(url_for('transactions.index'))
 
 def login_required(view):
     @functools.wraps(view)

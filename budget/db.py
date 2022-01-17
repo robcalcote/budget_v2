@@ -11,13 +11,9 @@ def get_db(app):
     
     return g.db
 
-def get_cursor():
-    if 'cursor' not in g:
-        g.cursor = g.db.connection.cursor()
-
 @current_app.teardown_appcontext
 def teardown_db(exception):
     db = g.pop('db', None)
 
     if db is not None:
-        db.connection.close()
+        db.connect.close()

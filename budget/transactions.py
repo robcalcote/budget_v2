@@ -1,7 +1,7 @@
 import datetime
 
 from flask import (
-    Blueprint, flash, g, current_app, redirect, render_template, request, url_for
+    Blueprint, flash, redirect, render_template, request, url_for
 )
 from flask_mysqldb import MySQL
 from werkzeug.exceptions import abort
@@ -51,11 +51,14 @@ def create():
             flash(error)
 
         else:
-            db = MySQL().connection.cursor()
-            db.execute(
+            conn = MySQL().connection
+            curs = conn.cursor()
+            curs.execute(
                 f"INSERT INTO Transactions (UserId, CategoryId, MonthId, Location, Amount, Date)" +
-                f" VALUES (1, 1, 1, '{loc}', {float(amount)}, '{date}')"
+                f" VALUES (10, 1, 1, '{loc}', {float(amount)}, '{date}')"
             )
+            conn.commit()
+            conn.close()
             return redirect(url_for('transactions.index'))
 
     return render_template('transactions/create.html')
@@ -78,11 +81,12 @@ def update(id):
             flash(error)
 
         else:
-            db = MySQL().connection.cursor()
-            db.execute(
-                f"UPDATE Transactions SET Location = '{loc}', Amount = {amount}" +
-                f" WHERE id = {id}"
-            )
+            conn = MySQL().connection
+            curs = conn.cursor()
+            query = f"UPDATE Transactions SET Location = '{loc}', Amount = {amount} WHERE Id = {id}"
+            curs.execute(query)
+            conn.commit()
+            conn.close()
             return redirect(url_for('transactions.index'))
 
     return render_template('transactions/update.html', t=t)
@@ -91,6 +95,9 @@ def update(id):
 @login_required
 def delete(id):
     get_transaction(id)
-    db = MySQL().connection.cursor()
-    db.execute('DELETE FROM Transactions WHERE id = ?', (id,))
+    conn = MySQL().connection
+    curs = conn.cursor()
+    curs.execute(f"DELETE FROM Transactions WHERE Id = {id}")
+    conn.commit()
+    conn.close()
     return redirect(url_for('transactions.index'))

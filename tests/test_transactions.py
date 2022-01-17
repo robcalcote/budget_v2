@@ -83,7 +83,7 @@ def test_create_update_validate_no_amount(client, auth, path):
 def test_delete(client, auth, app):
     auth.login()
     response = client.post('/1/delete')
-    assert response.headers['Location'] == 'http://localhost/'
+    assert response.headers['Location'] == 'http://localhost/auth/login'
 
     with app.app_context():
         db = MySQL().connection.cursor()

@@ -10,6 +10,7 @@ import credentials as c
 def create_app(test_config=None):
     # create and configure the app
     app = Flask(__name__)
+
     app.secret_key = 'test secret key'
     app.config['MYSQL_USER'] = c.USERNAME
     app.config['MYSQL_PASSWORD'] = c.LOCAL_DB_PASSWORD
@@ -24,16 +25,16 @@ def create_app(test_config=None):
     
     @app.route('/transactions')
     def transactions():
-        cursor = g.db.connection.cursor()
-        cursor.execute('''SELECT * FROM Transactions''')
-        results = cursor.fetchall()
+        curs = MySQL().connection.cursor()
+        curs.execute('''SELECT * FROM Transactions''')
+        results = curs.fetchall()
         return jsonify(results)
 
     @app.route('/transactions/<int:id>', methods=('GET', 'POST'))
     def transaction(id):
-        cursor = g.db.connection.cursor()
-        cursor.execute(f'SELECT * FROM Transactions WHERE id = {id}')
-        results = cursor.fetchone()
+        curs = MySQL().connection.cursor()
+        curs.execute(f'SELECT * FROM Transactions WHERE Id = {id}')
+        results = curs.fetchone()
         return jsonify(results)
 
     if test_config is None:
