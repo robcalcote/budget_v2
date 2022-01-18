@@ -52,7 +52,7 @@ def create():
             curs = conn.cursor()
             curs.execute(
                 f"INSERT INTO Transactions (UserId, CategoryId, MonthId, Location, Amount, Date)" +
-                f" VALUES (10, 1, 1, '{loc}', {float(amount)}, '{date}')"
+                f" VALUES (10, 1, 4, '{loc}', {float(amount)}, '{date}')"
             )
             conn.commit()
             return redirect(url_for('transactions.index'))
