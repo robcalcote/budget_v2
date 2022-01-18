@@ -1,61 +1,42 @@
 import os
 
 from flask import (
-    Flask, render_template, g, jsonify
+    Flask, g
 )
 from flask_mysqldb import MySQL
 
 import credentials as c
 
-def create_app(test_config=None):
-    # create and configure the app
-    app = Flask(__name__)
 
-    app.secret_key = 'test secret key'
-    app.config['MYSQL_USER'] = c.USERNAME
-    app.config['MYSQL_PASSWORD'] = c.LOCAL_DB_PASSWORD
-    app.config['MYSQL_HOST'] = 'localhost'
-    app.config['MYSQL_DB'] = 'budget'
-    app.config['MYSQL_CURSORCLASS'] = 'DictCursor'
-    
+def create_app(test_config=None):
+    app = Flask(__name__, instance_relative_config=True)
+    app.config.from_mapping(
+        SECRET_KEY='dev',
+        MYSQL_USER=c.USERNAME,
+        MYSQL_PASSWORD=c.LOCAL_DB_PASSWORD,
+        MYSQL_HOST='localhost',
+        MYSQL_PORT=3306,
+        MYSQL_DB='budget',
+        MYSQL_CURSORCLASS='DictCursor'
+    )
+
     with app.app_context():
         from . import db
+        from . import auth
+        from . import months
+        from . import transactions
         g.db = db.get_db(app)
-    
-    # Do not test
-    @app.route('/transactions')
-    def transactions():
-        curs = MySQL().connection.cursor()
-        curs.execute('''SELECT * FROM Transactions''')
-        results = curs.fetchall()
-        return jsonify(results)
-
-    # Do not test
-    @app.route('/transactions/<int:id>', methods=('GET', 'POST'))
-    def transaction(id):
-        curs = MySQL().connection.cursor()
-        curs.execute(f'SELECT * FROM Transactions WHERE Id = {id}')
-        results = curs.fetchone()
-        return jsonify(results)
+        app.register_blueprint(auth.bp)
+        app.register_blueprint(months.bp)
+        app.register_blueprint(transactions.bp)
 
     if test_config is None:
-        # load the instance config, if it exists, when not testing
         app.config.from_pyfile('config.py', silent=True)
     else:
-        # load the test config if passed in
         app.config.from_mapping(test_config)
 
-    # ensure the instance folder exists
-    try:
-        os.makedirs(app.instance_path)
-    except OSError:
-        pass
-
     with app.app_context():
-        from . import auth
-        from . import transactions
-        app.register_blueprint(auth.bp)
-        app.register_blueprint(transactions.bp)
+        db.init_app(app)
 
     app.add_url_rule('/', endpoint='transactions.index')
 

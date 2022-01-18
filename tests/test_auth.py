@@ -1,7 +1,5 @@
 import pytest
-from flask import g, session
-
-from flask_mysqldb import MySQL
+from flask import session
 
 
 @pytest.mark.parametrize(('first_name', 'last_name', 'username', 'password', 'message'), (

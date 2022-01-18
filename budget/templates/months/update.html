@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block header %}
+  <h1>{% block title %}Edit Month"{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+  <form method="post">
+	<label for="date">{{ month }}, {{ year }}</label>
+    <label for="projected">Projected Budget for {{ month }}</label>
+    <input name="projected" id="projected" value="{{ request.form['projected'] or m['Projected'] }}">
+    <label for="actual">Actual Budget so far for {{ month }}</label>
+    <input name="actual" id="actual" value="{{ request.form['actual'] or m['Actual'] }}">
+    <label for="savings">Estimated savings for {{ month }}</label>
+    <input name="savings" id="savings" value="{{ request.form['savings'] or m['Savings'] }}">
+    <input type="submit" value="Save">
+  </form>
+  <hr>
+  <form action="{{ url_for('months.delete', id=m['Id']) }}" method="post">
+    <input class="danger" type="submit" value="Delete" onclick="return confirm('Are you sure?');">
+  </form>
+{% endblock %}

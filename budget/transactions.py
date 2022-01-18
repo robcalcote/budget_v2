@@ -1,13 +1,10 @@
 import datetime
-
 from flask import (
     Blueprint, flash, redirect, render_template, request, url_for
 )
 from flask_mysqldb import MySQL
 from werkzeug.exceptions import abort
-
 from budget.auth import login_required
-
 bp = Blueprint('transactions', __name__)
 
 def get_transaction(id, check_author=True):
@@ -55,7 +52,7 @@ def create():
             curs = conn.cursor()
             curs.execute(
                 f"INSERT INTO Transactions (UserId, CategoryId, MonthId, Location, Amount, Date)" +
-                f" VALUES (10, 1, 1, '{loc}', {float(amount)}, '{date}')"
+                f" VALUES (10, 1, 4, '{loc}', {float(amount)}, '{date}')"
             )
             conn.commit()
             return redirect(url_for('transactions.index'))
