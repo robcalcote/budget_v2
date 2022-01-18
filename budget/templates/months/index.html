@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block header %}
+  <h1>{% block title %}Months{% endblock %}</h1>
+  {% if g.user %}
+    <a class="action" href="{{ url_for('months.create') }}">New</a>
+  {% endif %}
+{% endblock %}
+
+{% block content %}
+  {% for m in months %}
+    <article class="month">
+      <header>
+        <div>
+          <h1>{{ m['month_and_year'].strftime("%B") }}, {{ m['month_and_year'].strftime("%Y") }}</h1>
+          <div class="projected">Projected: {{ m['Projected'] }}</div>
+          <div class="actual">Actual: {{ m['Actual'] }}</div>
+          <div class="savings">Savings: {{ m['Savings'] }}</div>
+        </div>
+        <a class="action" href="{{ url_for('months.update', id=m['Id']) }}">Edit</a>
+      </header>
+    </article>
+    {% if not loop.last %}
+      <hr>
+    {% endif %}
+  {% endfor %}
+{% endblock %}
