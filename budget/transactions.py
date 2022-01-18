@@ -1,13 +1,10 @@
 import datetime
-
 from flask import (
     Blueprint, flash, redirect, render_template, request, url_for
 )
 from flask_mysqldb import MySQL
 from werkzeug.exceptions import abort
-
 from budget.auth import login_required
-
 bp = Blueprint('transactions', __name__)
 
 def get_transaction(id, check_author=True):

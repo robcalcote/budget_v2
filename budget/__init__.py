@@ -1,7 +1,7 @@
 import os
 
 from flask import (
-    Flask, render_template, g, jsonify
+    Flask, g
 )
 from flask_mysqldb import MySQL
 
@@ -22,10 +22,12 @@ def create_app(test_config=None):
 
     with app.app_context():
         from . import db
-        g.db = db.get_db(app)
         from . import auth
+        from . import months
         from . import transactions
+        g.db = db.get_db(app)
         app.register_blueprint(auth.bp)
+        app.register_blueprint(months.bp)
         app.register_blueprint(transactions.bp)
 
     if test_config is None:
@@ -33,27 +35,9 @@ def create_app(test_config=None):
     else:
         app.config.from_mapping(test_config)
 
-    app.add_url_rule('/', endpoint='transactions.index')
-
-
-    # Do not test
-    @app.route('/transactions', methods=['GET'])
-    def transactions():
-        curs = MySQL().connection.cursor()
-        curs.execute('''SELECT * FROM Transactions''')
-        results = curs.fetchall()
-        return jsonify(results)
-
-    # Do not test
-    @app.route('/transactions/<int:id>', methods=('GET', 'POST'))
-    def transaction(id):
-        curs = MySQL().connection.cursor()
-        curs.execute(f'SELECT * FROM Transactions WHERE Id = {id}')
-        results = curs.fetchone()
-        return jsonify(results)
-
-
     with app.app_context():
         db.init_app(app)
+
+    app.add_url_rule('/', endpoint='transactions.index')
 
     return app
