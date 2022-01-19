@@ -33,8 +33,10 @@ def get_months():
         m['month_and_year'] = datetime.datetime(m['Year'], m['Month'], 1)
     return months
 
-def validate_months_fields(projected=None, actual=None, savings=None):
+def validate_months_fields(date=None, projected=None, actual=None, savings=None):
 	error = None
+	if date == ['']:
+		error = 'Month and Year is required'
 	if not projected:
 		error = 'Projected is required'
 	if not actual:
@@ -52,12 +54,12 @@ def create_month(month, year, projected, actual, savings):
 	)
 	db.commit()
 
-def update_month(id, projected, actual, savings):
+def update_month(id, month, year, projected, actual, savings):
 	db = get_db_connection()
 	curs = get_db_cursor(db)
 	curs.execute(
 		f'UPDATE Months' + 
-		f' SET Savings={savings}, Projected={projected}, Actual={actual}' +
+		f' SET Month={month}, Year={year}, Savings={savings}, Projected={projected}, Actual={actual}' +
 		f' WHERE Id = {id}'
 	)
 	db.commit()
@@ -80,47 +82,53 @@ def index():
 @bp.route('/months/create', methods=('GET', 'POST'))
 @login_required
 def create():
-	now = datetime.datetime.now()
-	month = now.strftime('%B')
-	year = now.strftime('%Y')
-
 	if request.method == 'POST':
+		date = request.form['date'].split('-')
 		projected = request.form['projected']
 		actual = request.form['actual']
 		savings = request.form['savings']
 
-		error = validate_months_fields(savings, projected, actual)
+		error = validate_months_fields(date, projected, actual, savings)
 		if error is not None:
 			flash(error)
 
 		else:
-			create_month(now.strftime('%m'), now.strftime('%Y'), projected, actual, savings)
+			month = date[1]
+			year = date[0]
+			create_month(month, year, projected, actual, savings)
 			return redirect(url_for('months.index'))
 
-	return render_template('months/create.html', month=month, year=year)
+	now = datetime.datetime.now()
+	date = now.strftime('%Y-%m')
+	return render_template('months/create.html', date=date)
 
 @bp.route('/months/<int:id>/update', methods=('GET', 'POST'))
 @login_required
 def update(id):
 	m = get_month(id)
-	now = datetime.datetime.now()
-	month = now.strftime('%B')
-	year = now.strftime('%Y')
 
 	if request.method == 'POST':
+		date = request.form['date'].split('-')
 		savings = request.form['savings']
 		projected = request.form['projected']
 		actual = request.form['actual']
 
-		error = validate_months_fields(projected, actual, savings)
+		error = validate_months_fields(date, projected, actual, savings)
 		if error is not None:
 			flash(error)
 
 		else:
-			update_month(id, projected, actual, savings)
+			month=date[1]
+			year=date[0]
+			update_month(id, month, year, projected, actual, savings)
 			return redirect(url_for('months.index'))
 
-	return render_template('months/update.html', m=m, month=month, year=year)
+	month = str(m['Month'])
+	year = str(m['Year'])
+	if len(month) == 1:
+		month = "0"+month
+	date = year+'-'+month
+	return render_template('months/update.html', m=m, date=date)
 
 @bp.route('/months/<int:id>/delete', methods=('POST',))
 @login_required
