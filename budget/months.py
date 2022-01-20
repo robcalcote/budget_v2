@@ -17,7 +17,7 @@ def get_month(id):
     month = curs.fetchone()
 
     if month is None:
-        abort(404, f"Month id {id} doesn't exist.")
+        abort(404, f'Month id {id} doesn\'t exist.')
 
     return month
 
@@ -60,24 +60,20 @@ def update_month(id, month, year, projected, actual, savings):
 	curs.execute(
 		f'UPDATE Months' + 
 		f' SET Month={month}, Year={year}, Savings={savings}, Projected={projected}, Actual={actual}' +
-		f' WHERE Id = {id}'
+		f' WHERE Id = {id};'
 	)
 	db.commit()
-
-def update_month_actual(id, actual):
-	db = get_db_connection()
-	curs = get_db_cursor(db)
 
 def delete_month(id):
 	db = get_db_connection()
 	curs = get_db_cursor(db)
-	curs.execute(f'DELETE FROM Months WHERE Id = {id}')
+	curs.execute(f'DELETE FROM Months WHERE Id = {id};')
 	db.commit()
 
 @bp.route('/months')
 def index():
-	months = get_months()
-	return render_template('months/index.html', months=months)
+	m = get_months()
+	return render_template('months/index.html', months=m)
 
 @bp.route('/months/create', methods=('GET', 'POST'))
 @login_required

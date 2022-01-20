@@ -2,33 +2,72 @@ import datetime
 from flask import (
     Blueprint, flash, redirect, render_template, request, url_for
 )
-from flask_mysqldb import MySQL
 from werkzeug.exceptions import abort
 from budget.auth import login_required
+from budget.db import get_db_connection, get_db_cursor
 bp = Blueprint('transactions', __name__)
 
-def get_transaction(id, check_author=True):
-    db = MySQL().connection.cursor()
-    db.execute(
-        f"SELECT t.Id, t.Location, t.Amount, t.Date" +
-        f" FROM Transactions t WHERE t.Id = {id}"
+def get_transaction(id):
+    db = get_db_connection()
+    curs = get_db_cursor(db)
+    curs.execute(
+        f'SELECT t.Id, t.Location, t.Amount, t.Date' +
+        f' FROM Transactions t WHERE t.Id = {id};'
     )
-    transaction = db.fetchone()
+    transaction = curs.fetchone()
 
     if transaction is None:
-        abort(404, f"Transaction id {id} doesn't exist.")
+        abort(404, f'Transaction id {id} doesn\'t exist.')
 
     return transaction
 
+def get_transactions():
+    db = get_db_connection()
+    curs = get_db_cursor(db)
+    curs.execute(
+        f'SELECT t.Id, t.UserId, t.Location, t.Amount, t.Date'
+        f' FROM Transactions t ORDER BY t.Date DESC;'
+    )
+    t = curs.fetchall()
+
+    return t
+
+def validate_transactions_fields(loc=None, amount=None):
+    error = None
+    if not loc:
+        error = 'Location is required'
+    if not amount:
+        error = 'Amount is required'
+    return error
+
+def create_transaction(loc, amount, date):
+    db = get_db_connection()
+    curs = get_db_cursor(db)
+    curs.execute(
+        f'INSERT INTO Transactions (UserId, CategoryId, MonthId, Location, Amount, Date)' +
+        f' VALUES (10, 1, 4, "{loc}", {amount}, "{date}");'
+    )
+    db.commit()
+
+def update_transaction(id, loc, amount):
+    db = get_db_connection()
+    curs = get_db_cursor(db)
+    curs.execute(
+        f'UPDATE Transactions SET Location = "{loc}", Amount = {amount} WHERE Id = {id};'
+    )
+    db.commit()
+
+def delete_transaction(id):
+    db = get_db_connection()
+    curs = get_db_cursor(db)
+    curs.execute(
+        f'DELETE FROM Transactions WHERE Id = {id};'
+    )
+    db.commit()
+
 @bp.route('/')
 def index():
-    db = MySQL().connection.cursor()
-    db.execute(
-        'SELECT t.Id, t.UserId, t.Location, t.Amount, t.Date'
-        ' FROM Transactions t'
-        ' ORDER BY t.Date DESC'
-    )
-    transactions = db.fetchall()
+    transactions = get_transactions()
     return render_template('transactions/index.html', transactions=transactions)
 
 @bp.route('/create', methods=('GET', 'POST'))
@@ -38,23 +77,13 @@ def create():
         loc = request.form['location']
         amount = request.form['amount']
         date = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        error = None
 
-        if not loc:
-            error = 'Location is required'
-        if not amount:
-            error = 'Amount is required'
+        error = validate_transactions_fields(loc, amount)
         if error is not None:
             flash(error)
 
         else:
-            conn = MySQL().connection
-            curs = conn.cursor()
-            curs.execute(
-                f"INSERT INTO Transactions (UserId, CategoryId, MonthId, Location, Amount, Date)" +
-                f" VALUES (10, 1, 4, '{loc}', {float(amount)}, '{date}')"
-            )
-            conn.commit()
+            create_transaction(loc, amount, date)
             return redirect(url_for('transactions.index'))
 
     return render_template('transactions/create.html')
@@ -67,21 +96,13 @@ def update(id):
     if request.method == 'POST':
         loc = request.form['location']
         amount = request.form['amount']
-        error = None
 
-        if not loc:
-            error = 'Location is required.'
-        if not amount:
-            error = 'Amount is required'
+        error = validate_transactions_fields(loc, amount)
         if error is not None:
             flash(error)
 
         else:
-            conn = MySQL().connection
-            curs = conn.cursor()
-            query = f"UPDATE Transactions SET Location = '{loc}', Amount = {amount} WHERE Id = {id}"
-            curs.execute(query)
-            conn.commit()
+            update_transaction(id, loc, amount)
             return redirect(url_for('transactions.index'))
 
     return render_template('transactions/update.html', t=t)
@@ -89,9 +110,5 @@ def update(id):
 @bp.route('/<int:id>/delete', methods=('POST',))
 @login_required
 def delete(id):
-    get_transaction(id)
-    conn = MySQL().connection
-    curs = conn.cursor()
-    curs.execute(f"DELETE FROM Transactions WHERE Id = {id}")
-    conn.commit()
+    delete_transaction(id)
     return redirect(url_for('transactions.index'))
