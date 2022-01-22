@@ -7,8 +7,8 @@
     {% if g.user %}
       <li><a href="{{ url_for('transactions.index') }}">Transactions</a></li>
       <li><a href="{{ url_for('months.index') }}">Months</a></li>
-      <li><a href="">Categories</a></li>
-      <li><a href="">Users</a></li>
+      <li><a href="{{ url_for('categories.index') }}">Categories</a></li>
+      <li><a href="{{ url_for('users.index') }}">Users</a></li>
       <li><span>{{ g.user['Username'] }}</span>
       <li><a href="{{ url_for('auth.logout') }}">Log Out</a>
     {% else %}
