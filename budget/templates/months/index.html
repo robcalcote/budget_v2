@@ -13,11 +13,11 @@
       <header>
         <div>
           <h1>{{ m['month_and_year'].strftime("%B") }}, {{ m['month_and_year'].strftime("%Y") }}</h1>
+          <a class="action" href="{{ url_for('months.update', id=m['Id']) }}">Edit</a>
           <div class="projected">Projected: {{ m['Projected'] }}</div>
           <div class="actual">Actual: {{ m['Actual'] }}</div>
           <div class="savings">Savings: {{ m['Savings'] }}</div>
         </div>
-        <a class="action" href="{{ url_for('months.update', id=m['Id']) }}">Edit</a>
       </header>
     </article>
     {% if not loop.last %}
