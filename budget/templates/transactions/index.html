@@ -13,11 +13,11 @@
       <header>
         <div>
           <h1>{{ t['Location'] }}</h1>
-          <div class="about">On {{ t['Date'].strftime('%Y-%m-%d %T') }}</div>
+          <a class="action" href="{{ url_for('transactions.update', id=t['Id']) }}">Edit</a>
+          <div class="about">{{ t['Date'].strftime('%m-%d-%Y at %I:%M %p') }}</div>
         </div>
-        <a class="action" href="{{ url_for('transactions.update', id=t['Id']) }}">Edit</a>
       </header>
-      <p class="body">{{ t['Amount'] }}</p>
+      <p class="body">${{ t['Amount'] }}</p>
     </article>
     {% if not loop.last %}
       <hr>

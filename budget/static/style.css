@@ -25,3 +25,4 @@ li { display: inline; }
 .content textarea { min-height: 12em; resize: vertical; }
 input.danger { color: #cc2f2e; }
 input[type=submit] { align-self: start; min-width: 10em; }
+.action { float: right; }

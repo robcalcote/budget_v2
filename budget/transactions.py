@@ -11,7 +11,7 @@ def get_transaction(id):
     db = get_db_connection()
     curs = get_db_cursor(db)
     curs.execute(
-        f'SELECT t.Id, t.Location, t.Amount, t.Date' +
+        f'SELECT t.Id, t.Location, t.Amount, UNIX_TIMESTAMP(t.Date) AS Date' +
         f' FROM Transactions t WHERE t.Id = {id};'
     )
     transaction = curs.fetchone()
@@ -32,10 +32,12 @@ def get_transactions():
 
     return t
 
-def validate_transactions_fields(loc=None, amount=None):
+def validate_transactions_fields(loc=None, date=None, amount=None):
     error = None
     if not loc:
         error = 'Location is required'
+    if not date:
+        error = 'Date is required'
     if not amount:
         error = 'Amount is required'
     return error
@@ -76,9 +78,9 @@ def create():
     if request.method == 'POST':
         loc = request.form['location']
         amount = request.form['amount']
-        date = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        date = request.form['date']
 
-        error = validate_transactions_fields(loc, amount)
+        error = validate_transactions_fields(loc, date, amount)
         if error is not None:
             flash(error)
 
@@ -86,7 +88,14 @@ def create():
             create_transaction(loc, amount, date)
             return redirect(url_for('transactions.index'))
 
-    return render_template('transactions/create.html')
+    date = datetime.datetime.now()
+    date_split = str(date).split(' ')
+    y_m_d_split = date_split[0].split('-')
+    h_m_split = date_split[1].split(':')
+    year_month_day = y_m_d_split[0] + '-' + y_m_d_split[1] + '-' + y_m_d_split[2]
+    hours_minutes = h_m_split[0] + ':' + h_m_split[1]
+    load_date = year_month_day + 'T' + hours_minutes
+    return render_template('transactions/create.html', load_date=load_date)
 
 @bp.route('/<int:id>/update', methods=('GET', 'POST'))
 @login_required
@@ -95,17 +104,24 @@ def update(id):
 
     if request.method == 'POST':
         loc = request.form['location']
+        date = request.form['date']
         amount = request.form['amount']
 
-        error = validate_transactions_fields(loc, amount)
+        error = validate_transactions_fields(loc, date, amount)
         if error is not None:
             flash(error)
-
         else:
             update_transaction(id, loc, amount)
             return redirect(url_for('transactions.index'))
-
-    return render_template('transactions/update.html', t=t)
+    
+    date = datetime.datetime.fromtimestamp(t['Date'])
+    date_split = str(date).split(' ')
+    y_m_d_split = date_split[0].split('-')
+    h_m_split = date_split[1].split(':')
+    year_month_day = y_m_d_split[0] + '-' + y_m_d_split[1] + '-' + y_m_d_split[2]
+    hours_minutes = h_m_split[0] + ':' + h_m_split[1]
+    load_date = year_month_day + 'T' + hours_minutes
+    return render_template('transactions/update.html', t=t, load_date=load_date)
 
 @bp.route('/<int:id>/delete', methods=('POST',))
 @login_required
