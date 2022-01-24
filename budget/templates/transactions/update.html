@@ -2,6 +2,7 @@
 
 {% block header %}
   <h1>{% block title %}Edit Transaction: "{{ t['Location'] }}"{% endblock %}</h1>
+  <a  href="{{ url_for('transactions.index') }}">Go Back</a>
 {% endblock %}
 
 {% block content %}
