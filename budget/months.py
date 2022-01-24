@@ -122,7 +122,7 @@ def update(id):
 	month = str(m['Month'])
 	year = str(m['Year'])
 	if len(month) == 1:
-		month = "0"+month
+		month = '0'+month
 	date = year+'-'+month
 	return render_template('months/update.html', m=m, date=date)
 

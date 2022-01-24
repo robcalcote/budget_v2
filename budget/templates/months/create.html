@@ -2,6 +2,7 @@
 
 {% block header %}
   <h1>{% block title %}New Month{% endblock %}</h1>
+  <a  href="{{ url_for('months.index') }}">Go Back</a>
 {% endblock %}
 
 {% block content %}
