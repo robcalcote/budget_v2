@@ -1,6 +1,6 @@
 import datetime
 from flask import (
-    Blueprint, flash, redirect, render_template, request, url_for
+    Blueprint, flash, redirect, render_template, request, url_for, jsonify
 )
 from werkzeug.exceptions import abort
 from budget.auth import login_required
@@ -67,10 +67,15 @@ def delete_transaction(id):
     )
     db.commit()
 
-@bp.route('/')
+@bp.route('/transactions')
 def index():
     transactions = get_transactions()
-    return render_template('transactions/index.html', transactions=transactions)
+    try:
+        return jsonify(transactions)
+    except Exception as ex:
+        print(str(ex))
+        return jsonify(transactions)
+
 
 @bp.route('/create', methods=('GET', 'POST'))
 @login_required
