@@ -1,2 +1,3 @@
 # budget_v2
-budget app - Flask framework
+budget      - Flask Backend
+budget-app  - React Frontend
