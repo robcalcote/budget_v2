@@ -13,7 +13,7 @@ function App() {
 
   return (
     <div>
-      {Object(transactions).map(t => (
+      {Object.values(transactions).map(t => (
         <li key={t.Id}>
           {t.Location} - ${t.Amount}
         </li>
