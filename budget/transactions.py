@@ -1,9 +1,7 @@
-import datetime
 from flask import (
-    Blueprint, flash, redirect, render_template, request, url_for, jsonify
+    Blueprint, request, jsonify
 )
 from werkzeug.exceptions import abort
-from budget.auth import login_required
 from budget.db import get_db_connection, get_db_cursor
 bp = Blueprint('transactions', __name__)
 
@@ -11,13 +9,13 @@ def get_transaction(id):
     db = get_db_connection()
     curs = get_db_cursor(db)
     curs.execute(
-        f'SELECT t.Id, t.Location, t.Amount, UNIX_TIMESTAMP(t.Date) AS Date' +
+        f'SELECT t.Id, t.Location, t.Amount, t.Date AS Date' +
         f' FROM Transactions t WHERE t.Id = {id};'
     )
     transaction = curs.fetchone()
 
     if transaction is None:
-        abort(404, f'Transaction id {id} doesn\'t exist.')
+        abort(404, f'Not Found')
 
     return transaction
 
@@ -32,14 +30,14 @@ def get_transactions():
 
     return t
 
-def validate_transactions_fields(loc=None, date=None, amount=None):
+def validate_transactions_fields(loc=None, amount=None, date=None):
     error = None
     if not loc:
         error = 'Location is required'
-    if not date:
-        error = 'Date is required'
     if not amount:
         error = 'Amount is required'
+    if not date:
+        error = 'Date is required'
     return error
 
 def create_transaction(loc, amount, date):
@@ -51,11 +49,11 @@ def create_transaction(loc, amount, date):
     )
     db.commit()
 
-def update_transaction(id, loc, amount):
+def update_transaction(id, loc, amount, date):
     db = get_db_connection()
     curs = get_db_cursor(db)
     curs.execute(
-        f'UPDATE Transactions SET Location = "{loc}", Amount = {amount} WHERE Id = {id};'
+        f'UPDATE Transactions SET Location = "{loc}", Amount = {amount}, Date = "{date}" WHERE Id = {id};'
     )
     db.commit()
 
@@ -67,69 +65,64 @@ def delete_transaction(id):
     )
     db.commit()
 
-@bp.route('/transactions')
-def index():
-    transactions = get_transactions()
+
+@bp.route('/transactions/<int:id>', methods=(['GET']))
+def get_one_transaction(id):
+    t = get_transaction(id)
+    print(t)
+    res = {
+        'response': 'success',
+        'transaction': t
+    }
+    return res
+
+@bp.route('/transactions', methods=(['GET']))
+def get_all_transactions():
     try:
+        transactions = get_transactions()
         return jsonify(transactions)
     except Exception as ex:
         print(str(ex))
-        return jsonify(transactions)
+        return jsonify(ex)
 
+@bp.route('/transactions/create', methods=(['POST']))
+def post_transaction():
+    req = request.json
+    loc = req['location'] if ('location' in req) else None
+    date = req['date'] if ('date' in req) else None
+    amount = req['amount'] if ('amount' in req) else None
 
-@bp.route('/create', methods=('GET', 'POST'))
-@login_required
-def create():
-    if request.method == 'POST':
-        loc = request.form['location']
-        amount = request.form['amount']
-        date = request.form['date']
+    error = validate_transactions_fields(loc, amount, date)
+    if error is not None:
+        return {"error": error}
+    else:
+        create_transaction(loc, amount, date)
+        res = {
+            'response': 'success',
+        }
+        return res
 
-        error = validate_transactions_fields(loc, date, amount)
-        if error is not None:
-            flash(error)
-
-        else:
-            create_transaction(loc, amount, date)
-            return redirect(url_for('transactions.index'))
-
-    date = datetime.datetime.now()
-    date_split = str(date).split(' ')
-    y_m_d_split = date_split[0].split('-')
-    h_m_split = date_split[1].split(':')
-    year_month_day = y_m_d_split[0] + '-' + y_m_d_split[1] + '-' + y_m_d_split[2]
-    hours_minutes = h_m_split[0] + ':' + h_m_split[1]
-    load_date = year_month_day + 'T' + hours_minutes
-    return render_template('transactions/create.html', load_date=load_date)
-
-@bp.route('/<int:id>/update', methods=('GET', 'POST'))
-@login_required
-def update(id):
+@bp.route('/transactions/<int:id>/update', methods=(['PUT']))
+def update_one_transaction(id):
+    t = get_transaction(id) # error handling
+    req = request.json
+    loc = req['location'] if ('location' in req) else t['Location']
+    amount = req['amount'] if ('amount' in req) else t['Amount']
+    date = req['date'] if ('date' in req) else t['Date']
+    update_transaction(id, loc, amount, date)
     t = get_transaction(id)
+    res = {
+        'response': 'success',
+        'transaction': t
+    }
+    return res
 
-    if request.method == 'POST':
-        loc = request.form['location']
-        date = request.form['date']
-        amount = request.form['amount']
-
-        error = validate_transactions_fields(loc, date, amount)
-        if error is not None:
-            flash(error)
-        else:
-            update_transaction(id, loc, amount)
-            return redirect(url_for('transactions.index'))
-    
-    date = datetime.datetime.fromtimestamp(t['Date'])
-    date_split = str(date).split(' ')
-    y_m_d_split = date_split[0].split('-')
-    h_m_split = date_split[1].split(':')
-    year_month_day = y_m_d_split[0] + '-' + y_m_d_split[1] + '-' + y_m_d_split[2]
-    hours_minutes = h_m_split[0] + ':' + h_m_split[1]
-    load_date = year_month_day + 'T' + hours_minutes
-    return render_template('transactions/update.html', t=t, load_date=load_date)
-
-@bp.route('/<int:id>/delete', methods=('POST',))
-@login_required
-def delete(id):
+@bp.route('/transactions/<int:id>/delete', methods=(['DELETE']))
+def delete_one_transaction(id):
+    t = get_transaction(id) # error handling
     delete_transaction(id)
-    return redirect(url_for('transactions.index'))
+    res = {
+        'response': 'success'
+    }
+    return res
+    
