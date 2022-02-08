@@ -1,7 +1,6 @@
 from flask import (
-    Blueprint, flash, request, jsonify
+    Blueprint, request, jsonify
 )
-from jinja2 import Undefined
 from werkzeug.exceptions import abort
 from budget.db import get_db_connection, get_db_cursor
 bp = Blueprint('transactions', __name__)
@@ -10,13 +9,13 @@ def get_transaction(id):
     db = get_db_connection()
     curs = get_db_cursor(db)
     curs.execute(
-        f'SELECT t.Id, t.Location, t.Amount, UNIX_TIMESTAMP(t.Date) AS Date' +
+        f'SELECT t.Id, t.Location, t.Amount, t.Date AS Date' +
         f' FROM Transactions t WHERE t.Id = {id};'
     )
     transaction = curs.fetchone()
 
     if transaction is None:
-        abort(404, f'Transaction id {id} doesn\'t exist.')
+        abort(404, f'Not Found')
 
     return transaction
 
@@ -51,7 +50,6 @@ def create_transaction(loc, amount, date):
     db.commit()
 
 def update_transaction(id, loc, amount, date):
-    print(date)
     db = get_db_connection()
     curs = get_db_cursor(db)
     curs.execute(
@@ -67,50 +65,64 @@ def delete_transaction(id):
     )
     db.commit()
 
-@bp.route('/transactions')
+
+@bp.route('/transactions/<int:id>', methods=(['GET']))
+def get_one_transaction(id):
+    t = get_transaction(id)
+    print(t)
+    res = {
+        'response': 'success',
+        'transaction': t
+    }
+    return res
+
+@bp.route('/transactions', methods=(['GET']))
 def get_all_transactions():
-    transactions = get_transactions()
     try:
+        transactions = get_transactions()
         return jsonify(transactions)
     except Exception as ex:
         print(str(ex))
-        return jsonify(transactions)
+        return jsonify(ex)
 
 @bp.route('/transactions/create', methods=(['POST']))
 def post_transaction():
-    loc = request.json['location']
-    date = request.json['date']
-    amount = request.json['amount']
-
-    error = validate_transactions_fields(loc, amount, date)
-    if error is not None:
-        flash(error)
-    else:
-        create_transaction(loc, amount, date)
-        return
-
-
-@bp.route('/transactions/<int:id>/update', methods=(['PUT']))
-def update_one_transaction(id):
-    t = get_transaction(id)
-    
     req = request.json
     loc = req['location'] if ('location' in req) else None
-    amount = req['amount'] if ('amount' in req) else None
     date = req['date'] if ('date' in req) else None
+    amount = req['amount'] if ('amount' in req) else None
 
     error = validate_transactions_fields(loc, amount, date)
     if error is not None:
         return {"error": error}
     else:
-        update_transaction(id, loc, amount, date)
-        t = get_transaction(id)
+        create_transaction(loc, amount, date)
         res = {
             'response': 'success',
-            'transaction': t
         }
         return res
 
+@bp.route('/transactions/<int:id>/update', methods=(['PUT']))
+def update_one_transaction(id):
+    t = get_transaction(id) # error handling
+    req = request.json
+    loc = req['location'] if ('location' in req) else t['Location']
+    amount = req['amount'] if ('amount' in req) else t['Amount']
+    date = req['date'] if ('date' in req) else t['Date']
+    update_transaction(id, loc, amount, date)
+    t = get_transaction(id)
+    res = {
+        'response': 'success',
+        'transaction': t
+    }
+    return res
+
 @bp.route('/transactions/<int:id>/delete', methods=(['DELETE']))
 def delete_one_transaction(id):
-    return delete_transaction(id)
+    t = get_transaction(id) # error handling
+    delete_transaction(id)
+    res = {
+        'response': 'success'
+    }
+    return res
+    
