@@ -69,7 +69,6 @@ def delete_transaction(id):
 @bp.route('/transactions/<int:id>', methods=(['GET']))
 def get_one_transaction(id):
     t = get_transaction(id)
-    print(t)
     res = {
         'response': 'success',
         'transaction': t
@@ -78,12 +77,8 @@ def get_one_transaction(id):
 
 @bp.route('/transactions', methods=(['GET']))
 def get_all_transactions():
-    try:
-        transactions = get_transactions()
-        return jsonify(transactions)
-    except Exception as ex:
-        print(str(ex))
-        return jsonify(ex)
+    transactions = get_transactions()
+    return jsonify(transactions)
 
 @bp.route('/transactions/create', methods=(['POST']))
 def post_transaction():
