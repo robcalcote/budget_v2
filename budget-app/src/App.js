@@ -1,23 +1,13 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
+
+import Navbar from './Navbar';
+import Transactions from './Transactions';
 
 function App() {
-  const [transactions, setTransactions] = useState(0);
-
-  useEffect(() => {
-    fetch('/transactions')
-    .then(res => res.json())
-    .then(transactions => {
-      setTransactions(transactions);
-    });
-  }, []);
-
   return (
     <div>
-      {Object.values(transactions).map(t => (
-        <li key={t.Id}>
-          {t.Location} - ${t.Amount}
-        </li>
-      ))}
+      <Navbar />
+	  <Transactions />
     </div>
   )
 };
