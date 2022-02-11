@@ -78,18 +78,21 @@ def get_one_transaction(id):
 @bp.route('/transactions', methods=(['GET']))
 def get_all_transactions():
     transactions = get_transactions()
-    return jsonify(transactions)
+    res = {
+        'response': 'success',
+        'transactions': transactions
+    }
+    return res
 
 @bp.route('/transactions/create', methods=(['POST']))
-def post_transaction():
+def post_one_transaction():
     req = request.json
     loc = req['location'] if ('location' in req) else None
     date = req['date'] if ('date' in req) else None
     amount = req['amount'] if ('amount' in req) else None
-
     error = validate_transactions_fields(loc, amount, date)
     if error is not None:
-        return {"error": error}
+        return {'error': error}
     else:
         create_transaction(loc, amount, date)
         res = {
@@ -99,22 +102,25 @@ def post_transaction():
 
 @bp.route('/transactions/<int:id>/update', methods=(['PUT']))
 def update_one_transaction(id):
-    t = get_transaction(id) # error handling
+    t = get_transaction(id)
     req = request.json
     loc = req['location'] if ('location' in req) else t['Location']
     amount = req['amount'] if ('amount' in req) else t['Amount']
     date = req['date'] if ('date' in req) else t['Date']
-    update_transaction(id, loc, amount, date)
-    t = get_transaction(id)
-    res = {
-        'response': 'success',
-        'transaction': t
-    }
-    return res
+    if req == {}:
+        return {'error': 'Please specify which field you wish to update'}
+    else:
+        update_transaction(id, loc, amount, date)
+        t = get_transaction(id)
+        res = {
+            'response': 'success',
+            'transaction': t
+        }
+        return res
 
 @bp.route('/transactions/<int:id>/delete', methods=(['DELETE']))
 def delete_one_transaction(id):
-    t = get_transaction(id) # error handling
+    get_transaction(id) # error handling
     delete_transaction(id)
     res = {
         'response': 'success'
