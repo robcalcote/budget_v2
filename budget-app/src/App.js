@@ -7,7 +7,7 @@ function App() {
   return (
     <div>
       <Navbar />
-	  <Transactions />
+	    <Transactions />
     </div>
   )
 };
