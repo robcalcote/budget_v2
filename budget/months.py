@@ -74,6 +74,7 @@ def delete_month(id):
 	curs.execute(f'DELETE FROM Months WHERE Id = {id};')
 	db.commit()
 
+
 @bp.route('/months/<int:id>', methods=(['GET']))
 def get_one_month(id):
 	m = get_month(id)

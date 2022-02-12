@@ -30,9 +30,9 @@ function Categories() {
 				</TableRow>
 			</TableHead>
 			<TableBody>
-				{categories.map((c) => (
+				{categories.map((c, index) => (
 				<TableRow
-					key={c.Id}
+					key={index}
 					sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
 				>
 					<TableCell component="th" scope="row">

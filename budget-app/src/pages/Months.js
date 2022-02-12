@@ -18,8 +18,6 @@ function Months() {
 		});
 	}, []);
 
-	console.log(months);
-
 	return (
 		<TableContainer component={Paper}>
 			<Table sx={{ minWidth: 650 }} aria-label="simple table">
@@ -33,9 +31,9 @@ function Months() {
 				</TableRow>
 			</TableHead>
 			<TableBody>
-				{months.map((m) => (
+				{months.map((m, index) => (
 				<TableRow
-					key={m.Id}
+					key={index}
 					sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
 				>
 					<TableCell component="th" scope="row">{m.Month}</TableCell>
