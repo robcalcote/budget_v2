@@ -71,7 +71,7 @@ def get_one_transaction(id):
     t = get_transaction(id)
     res = {
         'response': 'success',
-        'transaction': t
+        'transactions': t
     }
     return res
 
@@ -114,7 +114,7 @@ def update_one_transaction(id):
         t = get_transaction(id)
         res = {
             'response': 'success',
-            'transaction': t
+            'transactions': t
         }
         return res
 

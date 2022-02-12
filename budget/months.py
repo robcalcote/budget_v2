@@ -1,9 +1,7 @@
-import datetime
 from flask import (
-    Blueprint, flash, redirect, render_template, request, url_for
+    Blueprint, request
 )
 from werkzeug.exceptions import abort
-from budget.auth import login_required
 from budget.db import get_db_connection, get_db_cursor
 bp = Blueprint('months', __name__)
 
@@ -75,7 +73,7 @@ def get_one_month(id):
 	m = get_month(id)
 	res = {
 		'response': 'success',
-		'month': m
+		'months': m
 	}
 	return res
 
@@ -84,7 +82,7 @@ def get_all_months():
 	months = get_months()
 	res = {
 		'response': 'success',
-		'month': months
+		'months': months
 	}
 	return res
 
@@ -122,7 +120,7 @@ def update_one_month(id):
 		m = get_month(id)
 		res = {
 			'response': 'success',
-			'transaction': m
+			'months': m
 		}
 		return res
 
