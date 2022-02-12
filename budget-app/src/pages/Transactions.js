@@ -26,9 +26,9 @@ function Transactions() {
 			<TableHead>
 				<TableRow>
 				<TableCell>Location</TableCell>
-				<TableCell align="right">Amount</TableCell>
-				<TableCell align="right">Date</TableCell>
-				<TableCell align="right">Category</TableCell>
+				<TableCell>Amount</TableCell>
+				<TableCell>Date</TableCell>
+				<TableCell>Category</TableCell>
 				<TableCell align="right">Edit</TableCell>
 				</TableRow>
 			</TableHead>
@@ -41,9 +41,9 @@ function Transactions() {
 					<TableCell component="th" scope="row">
 					{t.Location}
 					</TableCell>
-					<TableCell align="right">${t.Amount}</TableCell>
-					<TableCell align="right">{t.Date}</TableCell>
-					<TableCell align="right">{t.Category}</TableCell>
+					<TableCell>${t.Amount}</TableCell>
+					<TableCell>{t.Date}</TableCell>
+					<TableCell>{t.Category}</TableCell>
 					<TableCell align="right">
 						<IconButton aria-label="edit" size="small">
 							<ModeEditIcon fontSize="inherit" />

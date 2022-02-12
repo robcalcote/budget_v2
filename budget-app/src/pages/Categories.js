@@ -26,8 +26,8 @@ function Categories() {
 			<TableHead>
 				<TableRow>
 				<TableCell>Description</TableCell>
-				<TableCell align="right">Expense</TableCell>
-				<TableCell align="right">Recurring</TableCell>
+				<TableCell>Expense</TableCell>
+				<TableCell>Recurring</TableCell>
 				<TableCell align="right">Edit</TableCell>
 				</TableRow>
 			</TableHead>
@@ -40,8 +40,8 @@ function Categories() {
 					<TableCell component="th" scope="row">
 					{c.Description}
 					</TableCell>
-					<TableCell align="right">{c.Expense == 1 ? "X" : null}</TableCell>
-					<TableCell align="right">{c.Recurring == 1 ? "X" : null}</TableCell>
+					<TableCell>{c.Expense == 1 ? "X" : null}</TableCell>
+					<TableCell>{c.Recurring == 1 ? "X" : null}</TableCell>
 					<TableCell align="right">
 						<IconButton aria-label="edit" size="small">
 							<ModeEditIcon fontSize="inherit" />

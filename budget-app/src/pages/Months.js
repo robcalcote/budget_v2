@@ -26,10 +26,10 @@ function Months() {
 			<TableHead>
 				<TableRow>
 				<TableCell>Month</TableCell>
-				<TableCell align="right">Year</TableCell>
-				<TableCell align="right">Projected</TableCell>
-				<TableCell align="right">Actual</TableCell>
-				<TableCell align="right">Savings</TableCell>
+				<TableCell>Year</TableCell>
+				<TableCell>Projected</TableCell>
+				<TableCell>Actual</TableCell>
+				<TableCell>Savings</TableCell>
 				<TableCell align="right">Edit</TableCell>
 				</TableRow>
 			</TableHead>
@@ -40,10 +40,10 @@ function Months() {
 					sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
 				>
 					<TableCell component="th" scope="row">{m.Month}</TableCell>
-					<TableCell align="right">{m.Year}</TableCell>
-					<TableCell align="right">${m.Projected}</TableCell>
-					<TableCell align="right">${m.Actual}</TableCell>
-					<TableCell align="right">${m.Savings}</TableCell>
+					<TableCell>{m.Year}</TableCell>
+					<TableCell>${m.Projected}</TableCell>
+					<TableCell>${m.Actual}</TableCell>
+					<TableCell>${m.Savings}</TableCell>
 					<TableCell align="right">
 						<IconButton aria-label="edit" size="small">
 							<ModeEditIcon fontSize="inherit" />
