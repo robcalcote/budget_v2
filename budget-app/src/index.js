@@ -2,8 +2,9 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
-import Months from './Months';
-import Transactions from './Transactions';
+import Months from './pages/Months';
+import Transactions from './pages/Transactions';
+import Categories from './pages/Categories'
 import NoPage from "./pages/NoPage";
 import Navbar from "./Navbar";
 
@@ -15,6 +16,7 @@ export default function App() {
           <Route index element={<Transactions />} />
           <Route path="transactions" element={<Transactions />} />
           <Route path="months" element={<Months />} />
+          <Route path="categories" element={<Categories />} />
           <Route path="*" element={<NoPage />} />
         </Route>
       </Routes>

@@ -39,7 +39,7 @@ function Transactions() {
 					<TableCell component="th" scope="row">
 					{t.Location}
 					</TableCell>
-					<TableCell align="right">{t.Amount}</TableCell>
+					<TableCell align="right">${t.Amount}</TableCell>
 					<TableCell align="right">{t.Date}</TableCell>
 					<TableCell align="right">{t.CategoryId}</TableCell>
 					<TableCell align="right">Edit</TableCell>

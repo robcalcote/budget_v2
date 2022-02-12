@@ -31,6 +31,9 @@ function Navbar() {
             <Button variant="contained" style={buttonStyles}>
               <Link to="/months" style={linkStyles}>Months</Link>
             </Button>
+            <Button variant="contained" style={buttonStyles}>
+              <Link to="/categories" style={linkStyles}>Categories</Link>
+            </Button>
           </Stack>  
         </Toolbar>
       </AppBar>

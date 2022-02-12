@@ -1,9 +1,6 @@
-import os
-
 from flask import (
     Flask, g
 )
-from flask_mysqldb import MySQL
 
 import credentials as c
 
@@ -21,12 +18,10 @@ def create_app(test_config=None):
     )
 
     with app.app_context():
-        from . import db
-        from . import auth
-        from . import months
-        from . import transactions
+        from . import auth, db, categories, months, transactions
         g.db = db.get_db(app)
         app.register_blueprint(auth.bp)
+        app.register_blueprint(categories.bp)
         app.register_blueprint(months.bp)
         app.register_blueprint(transactions.bp)
 
@@ -37,7 +32,5 @@ def create_app(test_config=None):
 
     with app.app_context():
         db.init_app(app)
-
-    app.add_url_rule('/', endpoint='transactions.index')
 
     return app
