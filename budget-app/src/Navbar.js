@@ -8,6 +8,7 @@ import Typography from '@mui/material/Typography';
 
 function Navbar() {
   const buttonStyles = {
+    color: 'white',
     backgroundColor: '#6495ED',
     padding: '10 px'
   }

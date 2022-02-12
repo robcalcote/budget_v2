@@ -79,10 +79,10 @@ def get_one_month(id):
 
 @bp.route('/months', methods=(['GET']))
 def get_all_months():
-	months = get_months()
+	m = get_months()
 	res = {
 		'response': 'success',
-		'months': months
+		'months': m
 	}
 	return res
 

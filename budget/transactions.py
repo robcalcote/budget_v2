@@ -77,10 +77,10 @@ def get_one_transaction(id):
 
 @bp.route('/transactions', methods=(['GET']))
 def get_all_transactions():
-    transactions = get_transactions()
+    t = get_transactions()
     res = {
         'response': 'success',
-        'transactions': transactions
+        'transactions': t
     }
     return res
 
