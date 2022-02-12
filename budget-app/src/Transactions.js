@@ -14,7 +14,7 @@ function Transactions() {
 		fetch('/transactions')
 		.then(res => res.json())
 		.then(transactions => {
-		  setTransactions(transactions);
+		  setTransactions(transactions.transactions);
 		});
 	  }, []);
 
@@ -48,7 +48,7 @@ function Transactions() {
 			</TableBody>
 			</Table>
 		</TableContainer>
-  )
+	)
 };
 
 export default Transactions;

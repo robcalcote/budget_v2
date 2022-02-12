@@ -1,4 +1,5 @@
 import React from "react";
+import { Outlet, Link } from "react-router-dom";
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
@@ -18,6 +19,7 @@ function Navbar() {
           </IconButton>
         </Toolbar>
       </AppBar>
+      <Outlet />
     </div>
   )
 };
