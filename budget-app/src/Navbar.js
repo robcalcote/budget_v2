@@ -8,12 +8,12 @@ import Typography from '@mui/material/Typography';
 
 function Navbar() {
   const buttonStyles = {
-    color: 'white',
     backgroundColor: '#6495ED',
     padding: '10 px'
   }
 
   const linkStyles = {
+    color: '#000000',
     textDecoration: 'none'
   }
 
@@ -29,7 +29,7 @@ function Navbar() {
               <Link to="/transactions" style={linkStyles}>Transactions</Link>
             </Button>
             <Button variant="contained" style={buttonStyles}>
-              <Link to="/Months" style={linkStyles}>Months</Link>
+              <Link to="/months" style={linkStyles}>Months</Link>
             </Button>
           </Stack>  
         </Toolbar>
