@@ -38,8 +38,8 @@ function Categories() {
 					<TableCell component="th" scope="row">
 					{c.Description}
 					</TableCell>
-					<TableCell align="right">{c.Expense}</TableCell>
-					<TableCell align="right">{c.Recurring}</TableCell>
+					<TableCell align="right">{c.Expense == 1 ? "X" : null}</TableCell>
+					<TableCell align="right">{c.Recurring == 1 ? "X" : null}</TableCell>
 					<TableCell align="right">Edit</TableCell>
 				</TableRow>
 				))}

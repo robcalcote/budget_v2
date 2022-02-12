@@ -40,9 +40,9 @@ function Months() {
 				>
 					<TableCell component="th" scope="row">{m.Month}</TableCell>
 					<TableCell align="right">{m.Year}</TableCell>
-					<TableCell align="right">{m.Projected}</TableCell>
-					<TableCell align="right">{m.Actual}</TableCell>
-					<TableCell align="right">{m.Savings}</TableCell>
+					<TableCell align="right">${m.Projected}</TableCell>
+					<TableCell align="right">${m.Actual}</TableCell>
+					<TableCell align="right">${m.Savings}</TableCell>
 				</TableRow>
 				))}
 			</TableBody>
