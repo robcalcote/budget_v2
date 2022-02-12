@@ -1,22 +1,36 @@
 import React from "react";
 import { Outlet, Link } from "react-router-dom";
 import AppBar from '@mui/material/AppBar';
+import Button from '@mui/material/Button';
+import Stack from '@mui/material/Stack';
 import Toolbar from '@mui/material/Toolbar';
-import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
-import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 
 function Navbar() {
+  const buttonStyles = {
+    backgroundColor: '#6495ED',
+    padding: '10 px'
+  }
+
+  const linkStyles = {
+    textDecoration: 'none'
+  }
+
   return (
     <div>
       <AppBar position="static">
         <Toolbar variant="dense">
-          <Typography variant="h6" color="inherit" component="div">
-            Budget
-          </Typography>
-          <IconButton edge="end" color="inherit" aria-label="menu" sx={{ mr: 5 }}>
-            <ArrowDropDownIcon />
-          </IconButton>
+          <Stack direction="row" spacing={3}>
+            <Typography variant="h4" color="inherit" component="div">
+              Budget
+            </Typography>
+            <Button variant="contained" style={buttonStyles}>          
+              <Link to="/transactions" style={linkStyles}>Transactions</Link>
+            </Button>
+            <Button variant="contained" style={buttonStyles}>
+              <Link to="/Months" style={linkStyles}>Months</Link>
+            </Button>
+          </Stack>  
         </Toolbar>
       </AppBar>
       <Outlet />
