@@ -1,9 +1,7 @@
-import datetime
 from flask import (
-    Blueprint, flash, redirect, render_template, request, url_for
+    Blueprint, request
 )
 from werkzeug.exceptions import abort
-from budget.auth import login_required
 from budget.db import get_db_connection, get_db_cursor
 bp = Blueprint('months', __name__)
 
@@ -17,7 +15,7 @@ def get_month(id):
     month = curs.fetchone()
 
     if month is None:
-        abort(404, f'Month id {id} doesn\'t exist.')
+        abort(404, f'Not Found')
 
     return month
 
@@ -29,14 +27,14 @@ def get_months():
 		f' FROM Months m ORDER BY m.Year DESC, m.Month DESC;'
     )
     months = curs.fetchall()
-    for m in months:
-        m['month_and_year'] = datetime.datetime(m['Year'], m['Month'], 1)
     return months
 
-def validate_months_fields(date=None, projected=None, actual=None, savings=None):
+def validate_months_fields(month=None, year=None, projected=None, actual=None, savings=None):
 	error = None
-	if date == ['']:
-		error = 'Month and Year is required'
+	if not month:
+		error = 'Month is required'
+	if not year:
+		error = 'Year is required'
 	if not projected:
 		error = 'Projected is required'
 	if not actual:
@@ -70,64 +68,67 @@ def delete_month(id):
 	curs.execute(f'DELETE FROM Months WHERE Id = {id};')
 	db.commit()
 
-@bp.route('/months')
-def index():
-	m = get_months()
-	return render_template('months/index.html', months=m)
-
-@bp.route('/months/create', methods=('GET', 'POST'))
-@login_required
-def create():
-	if request.method == 'POST':
-		date = request.form['date'].split('-')
-		projected = request.form['projected']
-		actual = request.form['actual']
-		savings = request.form['savings']
-
-		error = validate_months_fields(date, projected, actual, savings)
-		if error is not None:
-			flash(error)
-
-		else:
-			month = date[1]
-			year = date[0]
-			create_month(month, year, projected, actual, savings)
-			return redirect(url_for('months.index'))
-
-	now = datetime.datetime.now()
-	date = now.strftime('%Y-%m')
-	return render_template('months/create.html', date=date)
-
-@bp.route('/months/<int:id>/update', methods=('GET', 'POST'))
-@login_required
-def update(id):
+@bp.route('/months/<int:id>', methods=(['GET']))
+def get_one_month(id):
 	m = get_month(id)
+	res = {
+		'response': 'success',
+		'months': m
+	}
+	return res
 
-	if request.method == 'POST':
-		date = request.form['date'].split('-')
-		savings = request.form['savings']
-		projected = request.form['projected']
-		actual = request.form['actual']
+@bp.route('/months', methods=(['GET']))
+def get_all_months():
+	months = get_months()
+	res = {
+		'response': 'success',
+		'months': months
+	}
+	return res
 
-		error = validate_months_fields(date, projected, actual, savings)
-		if error is not None:
-			flash(error)
+@bp.route('/months/create', methods=(['POST']))
+def post_one_month():
+	req = request.json
+	month = req['month'] if ('month' in req) else None
+	year = req['year'] if ('year' in req) else None
+	projected = req['projected'] if ('projected' in req) else None
+	actual = req['actual'] if ('actual' in req) else None
+	savings = req['savings'] if ('savings' in req) else None
+	error = validate_months_fields(month, year, projected, actual, savings)
+	if error is not None:
+		return {'error': error}
+	else:
+		create_month(month, year, projected, actual, savings)
+		res = {
+            'response': 'success',
+        }
+		return res
 
-		else:
-			month=date[1]
-			year=date[0]
-			update_month(id, month, year, projected, actual, savings)
-			return redirect(url_for('months.index'))
+@bp.route('/months/<int:id>/update', methods=(['PUT']))
+def update_one_month(id):
+	m = get_month(id)
+	req = request.json
+	month = req['month'] if ('month' in req) else m['Month']
+	year = req['year'] if ('year' in req) else m['Year']
+	projected = req['projected'] if ('projected' in req) else m['Projected']
+	actual = req['actual'] if ('actual' in req) else m['Actual']
+	savings = req['savings'] if ('savings' in req) else m['Savings']
+	if req == {}:
+		return {'error': 'Please specify which field you wish to update'}
+	else:
+		update_month(id, month, year, projected, actual, savings)
+		m = get_month(id)
+		res = {
+			'response': 'success',
+			'months': m
+		}
+		return res
 
-	month = str(m['Month'])
-	year = str(m['Year'])
-	if len(month) == 1:
-		month = '0'+month
-	date = year+'-'+month
-	return render_template('months/update.html', m=m, date=date)
-
-@bp.route('/months/<int:id>/delete', methods=('POST',))
-@login_required
-def delete(id):
-	delete_month(id)
-	return redirect(url_for('months.index'))
+@bp.route('/months/<int:id>/delete', methods=(['DELETE']))
+def delete_one_month(id):
+    get_month(id) # error handling
+    delete_month(id)
+    res = {
+        'response': 'success'
+    }
+    return res
