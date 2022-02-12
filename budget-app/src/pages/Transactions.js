@@ -41,7 +41,7 @@ function Transactions() {
 					</TableCell>
 					<TableCell align="right">${t.Amount}</TableCell>
 					<TableCell align="right">{t.Date}</TableCell>
-					<TableCell align="right">{t.CategoryId}</TableCell>
+					<TableCell align="right">{t.Category}</TableCell>
 					<TableCell align="right">Edit</TableCell>
 				</TableRow>
 				))}
