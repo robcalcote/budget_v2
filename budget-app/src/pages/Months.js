@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from "react";
+import IconButton from '@mui/material/IconButton';
+import ModeEditIcon from '@mui/icons-material/ModeEdit';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -28,6 +30,7 @@ function Months() {
 				<TableCell align="right">Projected</TableCell>
 				<TableCell align="right">Actual</TableCell>
 				<TableCell align="right">Savings</TableCell>
+				<TableCell align="right">Edit</TableCell>
 				</TableRow>
 			</TableHead>
 			<TableBody>
@@ -41,6 +44,11 @@ function Months() {
 					<TableCell align="right">${m.Projected}</TableCell>
 					<TableCell align="right">${m.Actual}</TableCell>
 					<TableCell align="right">${m.Savings}</TableCell>
+					<TableCell align="right">
+						<IconButton aria-label="edit" size="small">
+							<ModeEditIcon fontSize="inherit" />
+						</IconButton>
+					</TableCell>
 				</TableRow>
 				))}
 			</TableBody>
