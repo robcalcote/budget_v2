@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from "react";
+import IconButton from '@mui/material/IconButton';
+import ModeEditIcon from '@mui/icons-material/ModeEdit';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -24,23 +26,27 @@ function Categories() {
 			<TableHead>
 				<TableRow>
 				<TableCell>Description</TableCell>
-				<TableCell align="right">Expense</TableCell>
-				<TableCell align="right">Recurring</TableCell>
+				<TableCell>Expense</TableCell>
+				<TableCell>Recurring</TableCell>
 				<TableCell align="right">Edit</TableCell>
 				</TableRow>
 			</TableHead>
 			<TableBody>
-				{categories.map((c) => (
+				{categories.map((c, index) => (
 				<TableRow
-					key={c.Id}
+					key={index}
 					sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
 				>
 					<TableCell component="th" scope="row">
 					{c.Description}
 					</TableCell>
-					<TableCell align="right">{c.Expense == 1 ? "X" : null}</TableCell>
-					<TableCell align="right">{c.Recurring == 1 ? "X" : null}</TableCell>
-					<TableCell align="right">Edit</TableCell>
+					<TableCell>{c.Expense == 1 ? "X" : null}</TableCell>
+					<TableCell>{c.Recurring == 1 ? "X" : null}</TableCell>
+					<TableCell align="right">
+						<IconButton aria-label="edit" size="small">
+							<ModeEditIcon fontSize="inherit" />
+						</IconButton>
+					</TableCell>
 				</TableRow>
 				))}
 			</TableBody>

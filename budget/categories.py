@@ -64,6 +64,7 @@ def delete_category(id):
 	curs.execute(f'DELETE FROM Categories WHERE Id = {id};')
 	db.commit()
 
+
 @bp.route('/categories/<int:id>', methods=(['GET']))
 def get_one_category(id):
 	c = get_category(id)

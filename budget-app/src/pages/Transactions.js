@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from "react";
+import IconButton from '@mui/material/IconButton';
+import ModeEditIcon from '@mui/icons-material/ModeEdit';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -24,25 +26,29 @@ function Transactions() {
 			<TableHead>
 				<TableRow>
 				<TableCell>Location</TableCell>
-				<TableCell align="right">Amount</TableCell>
-				<TableCell align="right">Date</TableCell>
-				<TableCell align="right">Category</TableCell>
+				<TableCell>Amount</TableCell>
+				<TableCell>Date</TableCell>
+				<TableCell>Category</TableCell>
 				<TableCell align="right">Edit</TableCell>
 				</TableRow>
 			</TableHead>
 			<TableBody>
-				{transactions.map((t) => (
+				{transactions.map((t, index) => (
 				<TableRow
-					key={t.Id}
+					key={index}
 					sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
 				>
 					<TableCell component="th" scope="row">
 					{t.Location}
 					</TableCell>
-					<TableCell align="right">${t.Amount}</TableCell>
-					<TableCell align="right">{t.Date}</TableCell>
-					<TableCell align="right">{t.CategoryId}</TableCell>
-					<TableCell align="right">Edit</TableCell>
+					<TableCell>${t.Amount}</TableCell>
+					<TableCell>{t.Date}</TableCell>
+					<TableCell>{t.Category}</TableCell>
+					<TableCell align="right">
+						<IconButton aria-label="edit" size="small">
+							<ModeEditIcon fontSize="inherit" />
+						</IconButton>
+					</TableCell>
 				</TableRow>
 				))}
 			</TableBody>

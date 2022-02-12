@@ -13,22 +13,27 @@ def get_transaction(id):
         f' FROM Transactions t WHERE t.Id = {id};'
     )
     transaction = curs.fetchone()
-
     if transaction is None:
         abort(404, f'Not Found')
-
     return transaction
 
 def get_transactions():
     db = get_db_connection()
     curs = get_db_cursor(db)
     curs.execute(
-        f'SELECT t.Id, t.UserId, t.Location, t.Amount, t.Date'
-        f' FROM Transactions t ORDER BY t.Date DESC;'
+        f'SELECT t.Id, t.UserId, t.Location, t.Amount, t.Date, c.Description AS Category'
+        f' FROM Transactions t INNER JOIN Categories c ON t.CategoryId = c.Id;'
+        f' ORDER BY t.Date DESC;'
     )
     t = curs.fetchall()
-
     return t
+
+def reformat_transaction_dates(transactions):
+    for t in transactions:
+        day = t['Date'].strftime('%a')
+        m = t['Date'].strftime('%b')
+        d = t['Date'].strftime('%d')
+        t['Date'] = day + ' - ' + m + ' ' + d
 
 def validate_transactions_fields(loc=None, amount=None, date=None):
     error = None
@@ -78,6 +83,7 @@ def get_one_transaction(id):
 @bp.route('/transactions', methods=(['GET']))
 def get_all_transactions():
     t = get_transactions()
+    reformat_transaction_dates(t)
     res = {
         'response': 'success',
         'transactions': t

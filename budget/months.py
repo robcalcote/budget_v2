@@ -1,3 +1,4 @@
+from datetime import datetime as dt
 from flask import (
     Blueprint, request
 )
@@ -20,14 +21,19 @@ def get_month(id):
     return month
 
 def get_months():
-    db = get_db_connection()
-    curs = get_db_cursor(db)
-    curs.execute(
+	db = get_db_connection()
+	curs = get_db_cursor(db)
+	curs.execute(
 		f'SELECT m.Id, m.Month, m.Year, m.Savings, m.Projected, m.Actual' +
 		f' FROM Months m ORDER BY m.Year DESC, m.Month DESC;'
     )
-    months = curs.fetchall()
-    return months
+	months = curs.fetchall()
+	return months
+
+def reformat_months_month(months):
+	for m in months:
+		date = dt(m['Year'], m['Month'], 1)
+		m['Month'] = date.strftime('%B')
 
 def validate_months_fields(month=None, year=None, projected=None, actual=None, savings=None):
 	error = None
@@ -68,6 +74,7 @@ def delete_month(id):
 	curs.execute(f'DELETE FROM Months WHERE Id = {id};')
 	db.commit()
 
+
 @bp.route('/months/<int:id>', methods=(['GET']))
 def get_one_month(id):
 	m = get_month(id)
@@ -80,6 +87,7 @@ def get_one_month(id):
 @bp.route('/months', methods=(['GET']))
 def get_all_months():
 	m = get_months()
+	reformat_months_month(m)
 	res = {
 		'response': 'success',
 		'months': m
