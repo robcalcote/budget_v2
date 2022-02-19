@@ -40,8 +40,8 @@ function Categories() {
 					<TableCell component="th" scope="row">
 					{c.Description}
 					</TableCell>
-					<TableCell>{c.Expense == 1 ? "X" : null}</TableCell>
-					<TableCell>{c.Recurring == 1 ? "X" : null}</TableCell>
+					<TableCell>{c.Expense === 1 ? "X" : null}</TableCell>
+					<TableCell>{c.Recurring === 1 ? "X" : null}</TableCell>
 					<TableCell align="right">
 						<IconButton aria-label="edit" size="small">
 							<ModeEditIcon fontSize="inherit" />
@@ -52,7 +52,7 @@ function Categories() {
 			</TableBody>
 			</Table>
 		</TableContainer>
-	)
+	);
 };
 
 export default Categories;
