@@ -49,7 +49,7 @@ def create_transaction(loc, amount, date):
     db = get_db_connection()
     curs = get_db_cursor(db)
     curs.execute(
-        f'INSERT INTO Transactions (CategoryId, MonthId, Location, Amount, Date)' +
+        f'INSERT INTO transactions (CategoryId, MonthId, Location, Amount, Date)' +
         f' VALUES (1, 1, "{loc}", {amount}, "{date}");'
     )
     db.commit()
