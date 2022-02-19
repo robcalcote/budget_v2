@@ -16,7 +16,7 @@ def load_logged_in_user():
     else:
         db = get_db_connection()
         curs = get_db_cursor(db)
-        curs.execute(f'SELECT * FROM Users WHERE Id = "{user_id}"')
+        curs.execute(f'SELECT * FROM users WHERE Id = "{user_id}"')
         g.user = curs.fetchone()
 
 @bp.route('/register', methods=('GET', 'POST'))
@@ -42,7 +42,7 @@ def register():
         if error is None:
             try:
                 curs.execute(
-                    f"INSERT INTO Users (Active, FirstName, LastName, Username, Password)" +
+                    f"INSERT INTO users (Active, FirstName, LastName, Username, Password)" +
                     f" VALUES (True, '{first_name}', '{last_name}', '{username}', '{generate_password_hash(password)}')"
                 )
                 db.commit()
@@ -64,7 +64,7 @@ def login():
         curs = get_db_cursor(db)
         error = None
         curs.execute(
-            f'SELECT * FROM Users WHERE Username = "{username}"'
+            f'SELECT * FROM users WHERE Username = "{username}"'
         )
         user = curs.fetchone()
 

@@ -11,7 +11,7 @@ def get_month(id):
     curs = get_db_cursor(db)
     curs.execute(
 		f'SELECT m.Id, m.Month, m.Year, m.Savings, m.Projected, m.Actual' +
-		f' FROM Months m WHERE m.Id = {id};'
+		f' FROM months m WHERE m.Id = {id};'
     )
     month = curs.fetchone()
 
@@ -25,7 +25,7 @@ def get_months():
 	curs = get_db_cursor(db)
 	curs.execute(
 		f'SELECT m.Id, m.Month, m.Year, m.Savings, m.Projected, m.Actual' +
-		f' FROM Months m ORDER BY m.Year DESC, m.Month DESC;'
+		f' FROM months m ORDER BY m.Year DESC, m.Month DESC;'
     )
 	months = curs.fetchall()
 	return months
@@ -53,7 +53,7 @@ def create_month(month, year, projected, actual, savings):
 	db = get_db_connection()
 	curs = get_db_cursor(db)
 	curs.execute(
-		f'INSERT INTO Months (Month, Year, Savings, Projected, Actual)' + 
+		f'INSERT INTO months (Month, Year, Savings, Projected, Actual)' + 
 		f' VALUES ({month}, {year}, {savings}, {projected}, {actual});'
 	)
 	db.commit()
@@ -62,7 +62,7 @@ def update_month(id, month, year, projected, actual, savings):
 	db = get_db_connection()
 	curs = get_db_cursor(db)
 	curs.execute(
-		f'UPDATE Months' + 
+		f'UPDATE months' + 
 		f' SET Month={month}, Year={year}, Savings={savings}, Projected={projected}, Actual={actual}' +
 		f' WHERE Id = {id};'
 	)
@@ -71,7 +71,7 @@ def update_month(id, month, year, projected, actual, savings):
 def delete_month(id):
 	db = get_db_connection()
 	curs = get_db_cursor(db)
-	curs.execute(f'DELETE FROM Months WHERE Id = {id};')
+	curs.execute(f'DELETE FROM months WHERE Id = {id};')
 	db.commit()
 
 

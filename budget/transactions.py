@@ -10,7 +10,7 @@ def get_transaction(id):
     curs = get_db_cursor(db)
     curs.execute(
         f'SELECT t.Id, t.Location, t.Amount, t.Date AS Date' +
-        f' FROM Transactions t WHERE t.Id = {id};'
+        f' FROM transactions t WHERE t.Id = {id};'
     )
     transaction = curs.fetchone()
     if transaction is None:
@@ -21,8 +21,8 @@ def get_transactions():
     db = get_db_connection()
     curs = get_db_cursor(db)
     curs.execute(
-        f'SELECT t.Id, t.UserId, t.Location, t.Amount, t.Date, c.Description AS Category'
-        f' FROM Transactions t INNER JOIN Categories c ON t.CategoryId = c.Id;'
+        f'SELECT t.Id, t.Location, t.Amount, t.Date, c.Description AS Category'
+        f' FROM transactions t INNER JOIN Categories c ON t.CategoryId = c.Id;'
         f' ORDER BY t.Date DESC;'
     )
     t = curs.fetchall()
@@ -49,8 +49,8 @@ def create_transaction(loc, amount, date):
     db = get_db_connection()
     curs = get_db_cursor(db)
     curs.execute(
-        f'INSERT INTO Transactions (UserId, CategoryId, MonthId, Location, Amount, Date)' +
-        f' VALUES (10, 1, 4, "{loc}", {amount}, "{date}");'
+        f'INSERT INTO Transactions (CategoryId, MonthId, Location, Amount, Date)' +
+        f' VALUES (1, 1, "{loc}", {amount}, "{date}");'
     )
     db.commit()
 
@@ -58,7 +58,7 @@ def update_transaction(id, loc, amount, date):
     db = get_db_connection()
     curs = get_db_cursor(db)
     curs.execute(
-        f'UPDATE Transactions SET Location = "{loc}", Amount = {amount}, Date = "{date}" WHERE Id = {id};'
+        f'UPDATE transactions SET Location = "{loc}", Amount = {amount}, Date = "{date}" WHERE Id = {id};'
     )
     db.commit()
 
@@ -66,7 +66,7 @@ def delete_transaction(id):
     db = get_db_connection()
     curs = get_db_cursor(db)
     curs.execute(
-        f'DELETE FROM Transactions WHERE Id = {id};'
+        f'DELETE FROM transactions WHERE Id = {id};'
     )
     db.commit()
 
