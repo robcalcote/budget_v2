@@ -10,7 +10,7 @@ def get_category(id):
     curs = get_db_cursor(db)
     curs.execute(
 		f'SELECT c.Id, c.Description, c.Expense, c.Recurring' +
-		f' FROM Categories c WHERE c.Id = {id};'
+		f' FROM categories c WHERE c.Id = {id};'
     )
     category = curs.fetchone()
 
@@ -24,7 +24,7 @@ def get_categories():
     curs = get_db_cursor(db)
     curs.execute(
 		f'SELECT c.Id, c.Description, c.Expense, c.Recurring' +
-		f' FROM Categories c ORDER BY c.Description ASC;'
+		f' FROM categories c ORDER BY c.Description ASC;'
     )
     categories = curs.fetchall()
     return categories
@@ -43,7 +43,7 @@ def create_category(description, expense, recurring):
 	db = get_db_connection()
 	curs = get_db_cursor(db)
 	curs.execute(
-		f'INSERT INTO Categories (Description, Expense, Recurring)' + 
+		f'INSERT INTO categories (Description, Expense, Recurring)' + 
 		f' VALUES ("{description}", {expense}, {recurring});'
 	)
 	db.commit()
@@ -52,7 +52,7 @@ def update_category(id, description, expense, recurring):
 	db = get_db_connection()
 	curs = get_db_cursor(db)
 	curs.execute(
-		f'UPDATE Categories' + 
+		f'UPDATE categories' + 
 		f' SET Description="{description}", Expense={expense}, Recurring={recurring}' +
 		f' WHERE Id = {id};'
 	)
@@ -61,7 +61,7 @@ def update_category(id, description, expense, recurring):
 def delete_category(id):
 	db = get_db_connection()
 	curs = get_db_cursor(db)
-	curs.execute(f'DELETE FROM Categories WHERE Id = {id};')
+	curs.execute(f'DELETE FROM categories WHERE Id = {id};')
 	db.commit()
 
 
