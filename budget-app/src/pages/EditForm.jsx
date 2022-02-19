@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
 
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import Box from '@mui/material/Box';
@@ -8,16 +7,12 @@ import DatePicker from '@mui/lab/DatePicker';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
+import Typography from '@mui/material/Typography';
 
 const buttonStyles = {
     backgroundColor: '#6495ED',
     padding: '10 px'
-  }
-
-  const linkStyles = {
-    color: '#000000',
-    textDecoration: 'none'
-  }
+}
 
 function EditForm(props) {
     const [transaction, setTransaction] = useState(props.record);
@@ -61,6 +56,9 @@ function EditForm(props) {
             noValidate
             autoComplete="off"
             >
+            <Typography variant="h4" color="inherit" component="div">
+              Edit Transaction
+            </Typography>
             <TextField
                 id="transaction-edit-location"
                 label="Location"
@@ -92,8 +90,8 @@ function EditForm(props) {
                 value={props.record.Category}
             />
             <Stack spacing={2} direction="row">
-                <Button variant="contained" onClick={handleTEditSave}>Save</Button>
-                <Button variant="contained" onClick={handleCloseModal}>Cancel</Button>
+                <Button variant="contained" onClick={handleTEditSave} style={buttonStyles}>Save</Button>
+                <Button variant="contained" onClick={handleCloseModal} style={buttonStyles}>Cancel</Button>
             </Stack>
         </Box>
     );
