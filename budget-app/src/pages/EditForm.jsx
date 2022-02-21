@@ -4,7 +4,11 @@ import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import DatePicker from '@mui/lab/DatePicker';
+import FormControl from '@mui/material/FormControl';
+import InputLabel from '@mui/material/InputLabel';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
+import MenuItem from '@mui/material/MenuItem';
+import Select from '@mui/material/Select';
 import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
@@ -18,6 +22,7 @@ function EditForm(props) {
     const [tAmount, setTAmount] = useState(props.record.Amount);
 	const [tLocation, setTLocation] = useState(props.record.Location);
     const [tDate, setTDate] = useState(props.record.Date);
+    const [tCategory, setTCategory] = useState(props.record.CategoryId);
 
     function handleTEditSave() {
         let d = new Date(tDate)
@@ -25,13 +30,12 @@ function EditForm(props) {
         console.log(d);
         fetch("/transactions/"+props.record.Id+"/update", {
             method: "PUT",
-            body: JSON.stringify({"location": tLocation, "amount": tAmount, "date": d}),
+            body: JSON.stringify({"location": tLocation, "amount": tAmount, "date": d, "categoryId": tCategory}),
             headers: {
                 'Content-Type': 'application/json',
             }
         })
         .then(res => res.json()) // Parsing the data into a JavaScript object
-        .then(data => alert(JSON.stringify(data))) // Displaying the stringified data in an alert popup
         props.onClose();
     };
 
@@ -46,6 +50,10 @@ function EditForm(props) {
     const handleTDateChange = ((newTDate) => {
         setTDate(newTDate);
     });
+
+    const handleTCategoryChange = (event) => {
+        setTCategory(event.target.value);
+    };
 
     const handleCloseModal = (() => {
         props.onClose();
@@ -90,13 +98,21 @@ function EditForm(props) {
                     renderInput={(params) => <TextField {...params} />}
                 />
             </LocalizationProvider>
-            <TextField
-                id="transaction-edit-category"
-                label="Category"
-                variant="outlined"
-                value={props.record.Category}
-            />
-
+            <FormControl fullWidth>
+                <InputLabel id="demo-simple-select-label">Category</InputLabel>
+                <Select
+                    labelId="demo-simple-select-label"
+                    id="demo-simple-select"
+                    value={tCategory}
+                    label="Age"
+                    onChange={handleTCategoryChange}
+                >
+                    {/* TODO - dynamically display all categories and their IDs */}
+                    <MenuItem value={1}>Groceries</MenuItem>
+                    <MenuItem value={3}>Medical</MenuItem>
+                    <MenuItem value={2}>Payday</MenuItem>
+                </Select>
+            </FormControl>
             <Stack spacing={2} direction="row">
                 <Button variant="contained" onClick={handleTEditSave} style={buttonStyles}>Save</Button>
                 <Button variant="contained" onClick={handleCloseModal} style={buttonStyles}>Cancel</Button>
