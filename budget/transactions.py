@@ -28,7 +28,7 @@ def get_transactions():
     t = curs.fetchall()
     return t
 
-def validate_transactions_fields(loc=None, amount=None, date=None):
+def validate_transactions_fields(loc=None, amount=None, date=None, catId=None):
     error = None
     if not loc:
         error = 'Location is required'
@@ -36,6 +36,8 @@ def validate_transactions_fields(loc=None, amount=None, date=None):
         error = 'Amount is required'
     if not date:
         error = 'Date is required'
+    if not catId:
+        error = 'Category Id is required'
     return error
 
 def create_transaction(loc, amount, date):
@@ -88,7 +90,8 @@ def post_one_transaction():
     loc = req['location'] if ('location' in req) else None
     date = req['date'] if ('date' in req) else None
     amount = req['amount'] if ('amount' in req) else None
-    error = validate_transactions_fields(loc, amount, date)
+    catId = req['categoryId'] if ('categoryId' in req) else None
+    error = validate_transactions_fields(loc, amount, date, catId)
     if error is not None:
         return {'error': error}
     else:

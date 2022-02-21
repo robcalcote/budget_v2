@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import Box from '@mui/material/Box';
@@ -28,6 +28,15 @@ function EditForm(props) {
 	const [tLocation, setTLocation] = useState(props.record.Location);
     const [tDate, setTDate] = useState(props.record.Date);
     const [tCategory, setTCategory] = useState(props.record.CategoryId);
+	const [categories, setCategories] = useState([{}]);
+
+	useEffect(() => {
+		fetch('/categories')
+		.then(res => res.json())
+		.then(categories => {
+			setCategories(categories);
+		});
+	}, []);
 
     function handleTEditSave() {
         let d = new Date(tDate)
@@ -115,18 +124,17 @@ function EditForm(props) {
                 />
             </LocalizationProvider>
             <FormControl fullWidth>
-                <InputLabel id="demo-simple-select-label">Category</InputLabel>
+                <InputLabel id="transaction-category-label">Category</InputLabel>
                 <Select
-                    labelId="demo-simple-select-label"
-                    id="demo-simple-select"
+                    labelId="transaction-category-label"
+                    id="transaction-category"
                     value={tCategory}
-                    label="Age"
+                    label="Category"
                     onChange={handleTCategoryChange}
                 >
-                    {/* TODO - dynamically display all categories and their IDs */}
-                    <MenuItem value={1}>Groceries</MenuItem>
-                    <MenuItem value={3}>Medical</MenuItem>
-                    <MenuItem value={2}>Payday</MenuItem>
+                    {categories.map((c, index) => (
+                        <MenuItem key={index} value={c.Id}>{c.Description}</MenuItem>
+                    ))}
                 </Select>
             </FormControl>
             <Stack spacing={2} direction="row">
