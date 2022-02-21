@@ -18,6 +18,11 @@ const buttonStyles = {
     padding: '10 px'
 }
 
+const deleteStyles = {
+    backgroundColor: '#FF7F7F',
+    padding: '10 px'
+}
+
 function EditForm(props) {
     const [tAmount, setTAmount] = useState(props.record.Amount);
 	const [tLocation, setTLocation] = useState(props.record.Location);
@@ -31,6 +36,17 @@ function EditForm(props) {
         fetch("/transactions/"+props.record.Id+"/update", {
             method: "PUT",
             body: JSON.stringify({"location": tLocation, "amount": tAmount, "date": d, "categoryId": tCategory}),
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        })
+        .then(res => res.json()) // Parsing the data into a JavaScript object
+        props.onClose();
+    };
+
+    function handleTDelete() {
+        fetch("/transactions/"+props.record.Id+"/delete", {
+            method: "DELETE",
             headers: {
                 'Content-Type': 'application/json',
             }
@@ -116,6 +132,7 @@ function EditForm(props) {
             <Stack spacing={2} direction="row">
                 <Button variant="contained" onClick={handleTEditSave} style={buttonStyles}>Save</Button>
                 <Button variant="contained" onClick={handleCloseModal} style={buttonStyles}>Cancel</Button>
+                <Button variant="contained" onClick={handleTDelete} style={deleteStyles}>Delete</Button>
             </Stack>
         </Box>
     );
