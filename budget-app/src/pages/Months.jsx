@@ -54,7 +54,7 @@ function Months() {
 			</TableBody>
 			</Table>
 		</TableContainer>
-  )
+  );
 };
 
 export default Months;

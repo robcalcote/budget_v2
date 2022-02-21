@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from "react";
-import IconButton from '@mui/material/IconButton';
-import ModeEditIcon from '@mui/icons-material/ModeEdit';
+
+import Paper from '@mui/material/Paper';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
-import Paper from '@mui/material/Paper';
+
+import EditModal from './EditModal';
 
 function Transactions() {
 	const [transactions, setTransactions] = useState([{}]);
@@ -45,16 +46,16 @@ function Transactions() {
 					<TableCell>{t.Date}</TableCell>
 					<TableCell>{t.Category}</TableCell>
 					<TableCell align="right">
-						<IconButton aria-label="edit" size="small">
-							<ModeEditIcon fontSize="inherit" />
-						</IconButton>
+						<EditModal 
+							record={t}
+						/>
 					</TableCell>
 				</TableRow>
 				))}
 			</TableBody>
 			</Table>
 		</TableContainer>
-	)
+	);
 };
 
 export default Transactions;

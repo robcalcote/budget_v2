@@ -13,7 +13,7 @@ function Navbar() {
   }
 
   const linkStyles = {
-    color: '#000000',
+    color: '#ffffff',
     textDecoration: 'none'
   }
 
