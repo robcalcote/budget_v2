@@ -20,6 +20,18 @@ function EditForm(props) {
 	const [tLocation, setTLocation] = useState(props.record.Location);
     const [tDate, setTDate] = useState(props.record.Date);
 
+    const updateTransaction = (async () => {
+        fetch("/transactions/"+props.record.Id+"/update", {
+            method: "PUT",
+            body: JSON.stringify({"location": tLocation, "amount": tAmount}),
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        })
+        .then(res => res.json()) // Parsing the data into a JavaScript object
+        .then(data => alert(JSON.stringify(data))) // Displaying the stringified data in an alert popup
+        props.onClose();
+    });
 
     const handleTAmountChange = ((e) => {
 		setTAmount(e.target.value);
@@ -33,15 +45,14 @@ function EditForm(props) {
         setTDate(newTDate);
     });
 
-    const handleTEditSave = (() => {
-        fetch("http://localhost:5000/transactions/"+props.record.Id+"/update")
-        .then(res=>res.json())
-        .then(data => {
-            setTransaction(data);
-        });
-
-        props.onClose();
-    });
+    function handleTEditSave() {
+        setTransaction({
+            "location": tLocation,
+            "amount": tAmount,
+            "date": tDate,
+        })
+        updateTransaction();
+    }
 
     const handleCloseModal = (() => {
         props.onClose();
@@ -62,6 +73,7 @@ function EditForm(props) {
             <TextField
                 id="transaction-edit-location"
                 label="Location"
+                name="Location"
                 variant="outlined"
                 value={tLocation}
                 onChange={handleTLocationChange}
@@ -69,6 +81,7 @@ function EditForm(props) {
             <TextField
                 id="transaction-edit-amount"
                 label="Amount"
+                name="Amount"
                 variant="outlined"
                 type="number"
                 value={tAmount}
@@ -78,6 +91,7 @@ function EditForm(props) {
                 <DatePicker
                     id="transaction-edit-date"
                     label="Date"
+                    name="Date"
                     value={tDate}
                     onChange={handleTDateChange}
                     renderInput={(params) => <TextField {...params} />}
