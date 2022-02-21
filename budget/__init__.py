@@ -1,12 +1,15 @@
 from flask import (
     Flask, g
 )
+from flask_cors import CORS
 
 import credentials as c
 
 
 def create_app(test_config=None):
     app = Flask(__name__, instance_relative_config=True)
+    CORS(app)
+    
     app.config.from_mapping(
         SECRET_KEY='dev',
         MYSQL_USER=c.USERNAME,
