@@ -41,9 +41,9 @@ function EditModalButton(props) {
                 size="small"
                 onClick={handleModalOpen}
             >
-            <ModeEditIcon 
-                fontSize="inherit"
-            />
+                <ModeEditIcon 
+                    fontSize="inherit"
+                />
             </IconButton>
             <GenericModal
                 record={transaction}
