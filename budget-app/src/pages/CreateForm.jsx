@@ -21,7 +21,7 @@ const buttonStyles = {
 function CreateForm(props) {
     const [tAmount, setTAmount] = useState('');
 	const [tLocation, setTLocation] = useState('');
-    const [tDate, setTDate] = useState();
+    const [tDate, setTDate] = useState(new Date());
     const [tCategory, setTCategory] = useState('');
 	const [categories, setCategories] = useState([{}]);
 
