@@ -1,21 +1,32 @@
-import React from "react";
+import React, { useState } from "react";
 import { Outlet, Link } from "react-router-dom";
 import AppBar from '@mui/material/AppBar';
 import Button from '@mui/material/Button';
+import CreateModal from './pages/CreateModal';
 import Stack from '@mui/material/Stack';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 
-function Navbar() {
-  const buttonStyles = {
-    backgroundColor: '#6495ED',
-    padding: '10 px'
-  }
+const buttonStyles = {
+  backgroundColor: '#6495ED',
+  padding: '10 px'
+}
 
-  const linkStyles = {
-    color: '#ffffff',
-    textDecoration: 'none'
-  }
+const linkStyles = {
+  color: '#ffffff',
+  textDecoration: 'none'
+}
+
+function Navbar() {
+  const [openCreateModal, setOpenCreateModal] = useState(false);
+
+  const handleClose = (() => {
+		setOpenCreateModal(false);
+	});
+
+  const handleOpen = (() => {
+    setOpenCreateModal(true);
+	});
 
   return (
     <div>
@@ -34,10 +45,15 @@ function Navbar() {
             <Button variant="contained" style={buttonStyles}>
               <Link to="/categories" style={linkStyles}>Categories</Link>
             </Button>
+
+            <Button variant="contained" style={buttonStyles} onClick={handleOpen}>
+              Create New Transaction
+            </Button>
           </Stack>  
         </Toolbar>
       </AppBar>
       <Outlet />
+      <CreateModal open={openCreateModal} close={handleClose}/>
     </div>
   )
 };
