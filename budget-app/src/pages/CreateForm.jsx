@@ -19,10 +19,10 @@ const buttonStyles = {
 }
 
 function CreateForm(props) {
-    const [tAmount, setTAmount] = useState(null);
-	const [tLocation, setTLocation] = useState(null);
-    const [tDate, setTDate] = useState(null);
-    const [tCategory, setTCategory] = useState(null);
+    const [tAmount, setTAmount] = useState('');
+	const [tLocation, setTLocation] = useState('');
+    const [tDate, setTDate] = useState();
+    const [tCategory, setTCategory] = useState('');
 	const [categories, setCategories] = useState([{}]);
 
 	useEffect(() => {
