@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Outlet, Link } from "react-router-dom";
 import AppBar from '@mui/material/AppBar';
 import Button from '@mui/material/Button';
-import CreateModal from './pages/CreateModal';
+import GenericModal from "./pages/GenericModal";
 import Stack from '@mui/material/Stack';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
@@ -45,15 +45,18 @@ function Navbar() {
             <Button variant="contained" style={buttonStyles}>
               <Link to="/categories" style={linkStyles}>Categories</Link>
             </Button>
-
             <Button variant="contained" style={buttonStyles} onClick={handleOpen}>
-              Create New Transaction
+              New Transaction
             </Button>
           </Stack>  
         </Toolbar>
       </AppBar>
       <Outlet />
-      <CreateModal open={openCreateModal} close={handleClose}/>
+      <GenericModal
+        create={true}
+        open={openCreateModal}
+        close={handleClose}
+      />
     </div>
   )
 };

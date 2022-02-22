@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 
+import EditModalButton from './EditModalButton'
 import Paper from '@mui/material/Paper';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -7,8 +8,6 @@ import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
-
-import EditModal from './EditModal';
 
 function Transactions() {
 	const [transactions, setTransactions] = useState([{}]);
@@ -46,9 +45,7 @@ function Transactions() {
 					<TableCell>{t.Date}</TableCell>
 					<TableCell>{t.Category}</TableCell>
 					<TableCell align="right">
-						<EditModal 
-							record={t}
-						/>
+						<EditModalButton t={t}/>
 					</TableCell>
 				</TableRow>
 				))}
