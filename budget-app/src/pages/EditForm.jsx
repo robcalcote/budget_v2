@@ -41,7 +41,6 @@ function EditForm(props) {
     function handleTEditSave() {
         let d = new Date(tDate)
         d = d.getFullYear()+"-"+("0" + (d.getMonth() + 1)).slice(-2)+"-"+d.getDate()+" "+d.getHours()+":00:00";
-        console.log(d);
         fetch("/transactions/"+props.record.Id+"/update", {
             method: "PUT",
             body: JSON.stringify({"location": tLocation, "amount": tAmount, "date": d, "categoryId": tCategory}),
