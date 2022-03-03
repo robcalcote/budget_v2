@@ -35,21 +35,21 @@ function Months() {
 			</TableHead>
 			<TableBody>
 				{months.map((m, index) => (
-				<TableRow
-					key={index}
-					sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-				>
-					<TableCell component="th" scope="row">{m.Month}</TableCell>
-					<TableCell>{m.Year}</TableCell>
-					<TableCell>${m.Projected}</TableCell>
-					<TableCell>${m.Actual}</TableCell>
-					<TableCell>${m.Savings}</TableCell>
-					<TableCell align="right">
-						<IconButton aria-label="edit" size="small">
-							<ModeEditIcon fontSize="inherit" />
-						</IconButton>
-					</TableCell>
-				</TableRow>
+					<TableRow
+						key={index}
+						sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+					>
+						<TableCell component="th" scope="row">{m.Month}</TableCell>
+						<TableCell>{m.Year}</TableCell>
+						<TableCell>${m.Projected}</TableCell>
+						<TableCell>${m.Actual}</TableCell>
+						<TableCell>${m.Savings}</TableCell>
+						<TableCell align="right">
+							<IconButton aria-label="edit" size="small">
+								<ModeEditIcon fontSize="inherit" />
+							</IconButton>
+						</TableCell>
+					</TableRow>
 				))}
 			</TableBody>
 			</Table>
