@@ -5,19 +5,10 @@ import EditForm from './EditForm';
 
 function FormLoader(props) {
     if (props.create) {
-        return (
-            <CreateForm 
-                close={props.close}
-            />
-        );
+        return (<CreateForm close={props.close} />);
     }
     if (props.edit) {
-        return (
-            <EditForm
-                record={props.record}
-                onClose={props.close}
-            />
-        );
+        return (<EditForm record={props.record} onClose={props.close} />);
     }
 }
 
