@@ -29,7 +29,7 @@ function Navbar() {
 	});
 
   return (
-    <div>
+    <React.Fragment>
       <AppBar position="static">
         <Toolbar variant="dense">
           <Stack direction="row" spacing={3}>
@@ -57,7 +57,7 @@ function Navbar() {
         open={openCreateModal}
         close={handleClose}
       />
-    </div>
+    </React.Fragment>
   )
 };
 

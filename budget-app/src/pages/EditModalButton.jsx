@@ -35,7 +35,7 @@ function EditModalButton(props) {
 	});
 
     return (
-        <div>
+        <React.Fragment>
             <IconButton
                 aria-label="edit"
                 size="small"
@@ -51,7 +51,7 @@ function EditModalButton(props) {
                 open={openModal}
                 close={handleModalClose}
             />
-        </div>
+        </React.Fragment>
     );
 };
 
