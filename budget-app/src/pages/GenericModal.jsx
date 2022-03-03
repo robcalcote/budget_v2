@@ -1,8 +1,7 @@
 import React from "react";
 
 import Box from '@mui/material/Box';
-import CreateForm from './CreateForm'
-import EditForm from './EditForm';
+import FormLoader from './FormLoader';
 import Modal from '@mui/material/Modal';
 
 const modalStyles = {
@@ -18,39 +17,23 @@ const modalStyles = {
 };
 
 function GenericModal(props) {
-    if (props.create) {
-        return (
-            <Modal
-                open={props.open}
-                onClose={props.close}
-                aria-labelledby="modal-modal-title"
-                aria-describedby="modal-modal-description"
-            >
-                <Box sx={modalStyles}>
-                    <CreateForm 
-                        close={props.close}
-                    />
-                </Box>
-            </Modal>
-        );
-    }
-    if (props.edit) {
-        return (
-            <Modal
-                open={props.open}
-                onClose={props.close}
-                aria-labelledby="modal-modal-title"
-                aria-describedby="modal-modal-description"
-            >
-                <Box sx={modalStyles}>
-                    <EditForm
-                        record={props.record}
-                        onClose={props.close}
-                    />
-                </Box>
-            </Modal>
-        );
-    }
+    return ( 
+        <Modal 
+            open={props.open}
+            onClose={props.close}
+            aria-labelledby="modal-modal-title"
+            aria-describedby="modal-modal-description"
+        >
+            <Box sx={modalStyles}>
+                <FormLoader
+                    create={props.create}
+                    edit={props.edit}
+                    close={props.close}
+                    record={props.record}
+                />
+            </Box>
+        </Modal> 
+    );
 };
 
 export default GenericModal;
