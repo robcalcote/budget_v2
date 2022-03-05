@@ -18,7 +18,7 @@ function Transactions() {
 		.then(transactions => {
 		  setTransactions(transactions.transactions);
 		});
-	  }, []);
+	}, []);
 
 	return (
 		<TableContainer component={Paper}>
