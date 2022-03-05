@@ -22,7 +22,7 @@ def get_transactions():
     curs = get_db_cursor(db)
     curs.execute(
         f'SELECT t.Id, t.Location, t.Amount, t.Date, c.Id AS CategoryId, c.Description as Category'
-        f' FROM transactions t INNER JOIN Categories c ON t.CategoryId = c.Id;'
+        f' FROM transactions t INNER JOIN Categories c ON t.CategoryId = c.Id'
         f' ORDER BY t.Date DESC;'
     )
     t = curs.fetchall()
