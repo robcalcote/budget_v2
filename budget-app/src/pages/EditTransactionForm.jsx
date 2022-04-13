@@ -23,7 +23,7 @@ const deleteStyles = {
     padding: '10 px'
 }
 
-function EditForm(props) {
+function EditTransactionForm(props) {
     const [tAmount, setTAmount] = useState(props.record.Amount);
 	const [tLocation, setTLocation] = useState(props.record.Location);
     const [tDate, setTDate] = useState(props.record.Date);
@@ -145,4 +145,4 @@ function EditForm(props) {
     );
 };
 
-export default EditForm;
+export default EditTransactionForm;
