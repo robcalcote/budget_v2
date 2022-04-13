@@ -26,6 +26,8 @@ function GenericModal(props) {
         >
             <Box sx={modalStyles}>
                 <FormLoader
+                    t={props.t}
+                    m={props.m}
                     create={props.create}
                     edit={props.edit}
                     close={props.close}

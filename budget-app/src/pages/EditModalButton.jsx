@@ -27,7 +27,9 @@ function EditModalButton(props) {
                 />
             </IconButton>
             <GenericModal
-                record={props.t}
+                t={props.t}
+                m={props.m}
+                record={props.t || props.m}
                 edit={true}
                 open={openModal}
                 close={handleModalClose}

@@ -45,7 +45,7 @@ function Transactions() {
 					<TableCell>{t.Date}</TableCell>
 					<TableCell>{t.Category}</TableCell>
 					<TableCell align="right">
-						<EditModalButton t={t}/>
+						<EditModalButton t={t} />
 					</TableCell>
 				</TableRow>
 				))}
