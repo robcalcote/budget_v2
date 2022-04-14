@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { Outlet, Link } from "react-router-dom";
 import AppBar from '@mui/material/AppBar';
 import Button from '@mui/material/Button';
-import GenericModal from './pages/GenericModal';
 import Stack from '@mui/material/Stack';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
@@ -18,15 +17,6 @@ const linkStyles = {
 }
 
 function Navbar() {
-  const [openCreateModal, setOpenCreateModal] = useState(false);
-
-  const handleClose = (() => {
-		setOpenCreateModal(false);
-	});
-
-  const handleOpen = (() => {
-    setOpenCreateModal(true);
-	});
 
   return (
     <React.Fragment>
@@ -45,18 +35,10 @@ function Navbar() {
             <Button variant="contained" style={buttonStyles}>
               <Link to="/categories" style={linkStyles}>Categories</Link>
             </Button>
-            <Button variant="contained" style={buttonStyles} onClick={handleOpen}>
-              New Transaction
-            </Button>
           </Stack>  
         </Toolbar>
       </AppBar>
       <Outlet />
-      <GenericModal
-        create={true}
-        open={openCreateModal}
-        close={handleClose}
-      />
     </React.Fragment>
   )
 };
