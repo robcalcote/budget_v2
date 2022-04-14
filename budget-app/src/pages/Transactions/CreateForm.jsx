@@ -44,6 +44,7 @@ function CreateForm(props) {
             }
         })
         .then(res => res.json()) // Parsing the data into a JavaScript object
+        props.refresh(oldKey => oldKey + 1);
         props.close();
     };
 

@@ -32,6 +32,7 @@ function EditModalButton(props) {
                 record={props.t || props.m}
                 edit={true}
                 open={openModal}
+                refresh={props.refresh}
                 close={handleModalClose}
             />
         </React.Fragment>
