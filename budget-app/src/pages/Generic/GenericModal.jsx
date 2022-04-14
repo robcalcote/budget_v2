@@ -28,7 +28,7 @@ function GenericModal(props) {
                 <FormLoader
                     t={props.t}
                     m={props.m}
-                    create={props.create}
+                    createTransaction={props.createTransaction}
                     edit={props.edit}
                     close={props.close}
                     record={props.record}

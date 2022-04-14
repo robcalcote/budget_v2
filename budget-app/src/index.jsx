@@ -2,10 +2,10 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
-import Months from './pages/Months';
-import Transactions from './pages/Transactions';
-import Categories from './pages/Categories'
-import NoPage from "./pages/NoPage";
+import Months from './pages/Months/Months';
+import Transactions from './pages/Transactions/Transactions';
+import Categories from './pages/Categories/Categories'
+import NoPage from "./pages/Generic/NoPage";
 import Navbar from "./Navbar";
 
 export default function App() {
