@@ -49,6 +49,7 @@ function EditTransactionForm(props) {
             }
         })
         .then(res => res.json()) // Parsing the data into a JavaScript object
+        props.refresh(oldKey => oldKey + 1);
         props.onClose();
     };
 
@@ -60,6 +61,7 @@ function EditTransactionForm(props) {
             }
         })
         .then(res => res.json()) // Parsing the data into a JavaScript object
+        props.refresh(oldKey => oldKey + 1);
         props.onClose();
     };
 

@@ -6,10 +6,10 @@ import EditTransactionForm from '../Transactions/EditTransactionForm';
 
 function FormLoader(props) {
     if (props.createTransaction) {
-        return (<CreateForm close={props.close} />);
+        return (<CreateForm close={props.close} refresh={props.refresh} />);
     }
     if (props.t) {
-        return (<EditTransactionForm record={props.record} onClose={props.close} />);
+        return (<EditTransactionForm record={props.record} onClose={props.close} refresh={props.refresh} />);
     }
     if (props.m) {
         return (<EditMonthForm record={props.record} onClose={props.close} />);

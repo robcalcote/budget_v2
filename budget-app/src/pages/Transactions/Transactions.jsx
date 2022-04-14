@@ -19,6 +19,7 @@ const buttonStyles = {
 function Transactions() {
 	const [transactions, setTransactions] = useState([{}]);
 	const [openCreateModal, setOpenCreateModal] = useState(false);
+	const [refreshKey, setRefreshKey] = useState(0);
 
 	useEffect(() => {
 		fetch('/transactions')
@@ -26,7 +27,7 @@ function Transactions() {
 		.then(transactions => {
 		  setTransactions(transactions.transactions);
 		});
-	}, []);
+	}, [refreshKey]);
 
 	const handleClose = (() => {
 		setOpenCreateModal(false);
@@ -65,7 +66,10 @@ function Transactions() {
 						<TableCell>{t.Date}</TableCell>
 						<TableCell>{t.Category}</TableCell>
 						<TableCell align="right">
-							<EditModalButton t={t} />
+							<EditModalButton
+								t={t}
+								refresh={setRefreshKey} 
+							/>
 						</TableCell>
 					</TableRow>
 					))}
@@ -75,6 +79,7 @@ function Transactions() {
 			<GenericModal
 				createTransaction={true}
 				open={openCreateModal}
+				refresh={setRefreshKey}
 				close={handleClose}
 			/>
 		</>
