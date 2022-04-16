@@ -48,7 +48,7 @@ function EditTransactionForm(props) {
                 'Content-Type': 'application/json',
             }
         })
-        .then(res => res.json()) // Parsing the data into a JavaScript object
+        .then(res => res.json()); // Parsing the data into a JavaScript object
         props.refresh(oldKey => oldKey + 1);
         props.onClose();
     };
