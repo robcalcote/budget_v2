@@ -77,7 +77,7 @@ function CreateForm(props) {
               Create Transaction
             </Typography>
             <TextField
-                id="transaction-edit-location"
+                id="transaction-create-location"
                 label="Location"
                 name="Location"
                 variant="outlined"
@@ -85,7 +85,7 @@ function CreateForm(props) {
                 onChange={handleTLocationChange}
             />
             <TextField
-                id="transaction-edit-amount"
+                id="transaction-create-amount"
                 label="Amount"
                 name="Amount"
                 variant="outlined"
@@ -95,7 +95,7 @@ function CreateForm(props) {
             />
             <LocalizationProvider dateAdapter={AdapterDateFns}>
                 <DatePicker
-                    id="transaction-edit-date"
+                    id="transaction-create-date"
                     label="Date"
                     name="Date"
                     value={tDate}
@@ -107,7 +107,7 @@ function CreateForm(props) {
                 <InputLabel id="transaction-category-label">Category</InputLabel>
                 <Select
                     labelId="transaction-category-label"
-                    id="transaction-category"
+                    id="transaction-create-category"
                     value={tCategory}
                     label="Category"
                     onChange={handleTCategoryChange}

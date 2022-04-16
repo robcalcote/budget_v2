@@ -77,7 +77,7 @@ function Transactions() {
 				</Table>
 			</TableContainer>
 			<GenericModal
-				createTransaction={true}
+				create={'transaction'}
 				open={openCreateModal}
 				refresh={setRefreshKey}
 				close={handleClose}

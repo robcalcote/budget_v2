@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 
-import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
 import FormControl from '@mui/material/FormControl';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
@@ -10,63 +10,45 @@ import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 
-
 const buttonStyles = {
     backgroundColor: '#6495ED',
     padding: '10 px'
 }
 
-const deleteStyles = {
-    backgroundColor: '#FF7F7F',
-    padding: '10 px'
-}
+const date = new Date();
+const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
 
-const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+function CreateForm(props) {
+    const [mMonth, setMMonth] = useState(date.getMonth());
+	const [mYear, setMYear] = useState(date.getFullYear());
+    const [mProjected, setMProjected] = useState(0);
+    const [mActual, setMActual] = useState(0);
+	const [mSavings, setMSavings] = useState(0);
 
-function EditMonthForm(props) {
-    const [mMonth, setMMonth] = useState(props.record.Month);
-	const [mYear, setMYear] = useState(props.record.Year);
-    const [mProjected, setMProjected] = useState(props.record.Projected);
-    const [mActual, setMActual] = useState(props.record.Actual);
-	const [mSavings, setMSavings] = useState(props.record.Savings);
-
-    function handleMEditSave() {
-        const numMonth = months.indexOf(mMonth);
-        fetch("/months/"+props.record.Id+"/update", {
-            method: "PUT",
-            body: JSON.stringify({"month": numMonth+1, "year": mYear, "projected": mProjected, "actual": mActual, "savings": mSavings}),
+    function handleMCreateSave() {
+        fetch("/months/create", {
+            method: "POST",
+            body: JSON.stringify({"month": mMonth+1, "year": mYear, "projected": mProjected, "actual": mActual, "savings": mSavings}),
             headers: {
                 'Content-Type': 'application/json',
             }
         })
-        .then(res => res.json());
+        .then(res => res.json()); // Parsing the data into a JavaScript object
         props.refresh(oldKey => oldKey + 1);
-        props.onClose();
+        props.close();
     };
 
-    function handleMDelete() {
-        fetch("/months/"+props.record.Id+"/delete", {
-            method: "DELETE",
-            headers: {
-                'Content-Type': 'application/json',
-            }
-        })
-        .then(res => res.json())
-        props.refresh(oldKey => oldKey + 1);
-        props.onClose();
-    };
-
-    const handleMMonthChange = ((e) => {
+    const handleMMonthChange = (e) => {
 		setMMonth(e.target.value);
-	});
+	};
 
-    const handleMYearChange = ((e) => {
+    const handleMYearChange = (e) => {
 		setMYear(e.target.value);
-	});
+	};
 
-    const handleMProjectedChange = ((e) => {
+    const handleMProjectedChange = (e) => {
         setMProjected(e.target.value);
-    });
+    };
 
     const handleMActualChange = (e) => {
         setMActual(e.target.value);
@@ -75,10 +57,6 @@ function EditMonthForm(props) {
     const handleMSavingsChange = (e) => {
         setMSavings(e.target.value);
     };
-
-    const handleCloseModal = (() => {
-        props.onClose();
-    });
 
     return (
         <Box
@@ -90,24 +68,24 @@ function EditMonthForm(props) {
             autoComplete="off"
             >
             <Typography variant="h4" color="inherit" component="div">
-              Edit Month
+              Create Month
             </Typography>
             <FormControl fullWidth>
                 <InputLabel id="month-month-label">Month</InputLabel>
                 <Select
                     labelId="month-month-label"
-                    id="month-edit-month"
+                    id="month-create-month"
                     value={mMonth}
                     label="Month"
                     onChange={handleMMonthChange}
                 >
                     {months.map((m, index) => (
-                        <MenuItem key={index} value={m}>{m}</MenuItem>
+                        <MenuItem key={index} value={months.indexOf(m)}>{m}</MenuItem>
                     ))}               
                 </Select>
             </FormControl>
             <TextField
-                id="month-edit-year"
+                id="month-create-year"
                 label="Year"
                 name="Year"
                 variant="outlined"
@@ -116,25 +94,25 @@ function EditMonthForm(props) {
                 onChange={handleMYearChange}
             />
             <TextField
-                id="month-edit-projected"
+                id="month-create-projected"
                 label="Projected"
                 name="Projected"
                 variant="outlined"
                 type="number"
                 value={mProjected}
                 onChange={handleMProjectedChange}
-            />
+            />            
             <TextField
-                id="month-edit-actual"
+                id="month-create-actual"
                 label="Actual"
                 name="Actual"
                 variant="outlined"
                 type="number"
                 value={mActual}
                 onChange={handleMActualChange}
-            />
+            />           
             <TextField
-                id="month-edit-savings"
+                id="month-create-savings"
                 label="Savings"
                 name="Savings"
                 variant="outlined"
@@ -143,12 +121,11 @@ function EditMonthForm(props) {
                 onChange={handleMSavingsChange}
             />
             <Stack spacing={2} direction="row">
-                <Button variant="contained" onClick={handleMEditSave} style={buttonStyles}>Save</Button>
-                <Button variant="contained" onClick={handleCloseModal} style={buttonStyles}>Cancel</Button>
-                <Button variant="contained" onClick={handleMDelete} style={deleteStyles}>Delete</Button>
+                <Button variant="contained" onClick={handleMCreateSave} style={buttonStyles}>Save</Button>
+                <Button variant="contained" onClick={props.close} style={buttonStyles}>Cancel</Button>
             </Stack>
         </Box>
     );
 };
 
-export default EditMonthForm;
+export default CreateForm;
