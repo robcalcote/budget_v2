@@ -28,6 +28,7 @@ function GenericModal(props) {
                 <FormLoader
                     t={props.t}
                     m={props.m}
+                    c={props.c}
                     create={props.create}
                     refresh={props.refresh}
                     edit={props.edit}

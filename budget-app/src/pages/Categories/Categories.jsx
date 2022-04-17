@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from "react";
 
 import Button from '@mui/material/Button';
+import EditModalButton from '../Generic/EditModalButton'
 import GenericModal from '../Generic/GenericModal';
-import IconButton from '@mui/material/IconButton';
-import ModeEditIcon from '@mui/icons-material/ModeEdit';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -65,9 +64,10 @@ function Categories() {
 						<TableCell>{c.Expense === 1 ? "X" : null}</TableCell>
 						<TableCell>{c.Recurring === 1 ? "X" : null}</TableCell>
 						<TableCell align="right">
-							<IconButton aria-label="edit" size="small">
-								<ModeEditIcon fontSize="inherit" />
-							</IconButton>
+							<EditModalButton 
+								c={c} 
+								refresh={setRefreshKey}
+							/>							
 						</TableCell>
 					</TableRow>
 					))}
