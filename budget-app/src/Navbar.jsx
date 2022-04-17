@@ -26,15 +26,15 @@ function Navbar() {
             <Typography variant="h4" color="inherit" component="div">
               Budget
             </Typography>
-            <Button variant="contained" style={buttonStyles}>          
-              <Link to="/transactions" style={linkStyles}>Transactions</Link>
-            </Button>
-            <Button variant="contained" style={buttonStyles}>
-              <Link to="/months" style={linkStyles}>Months</Link>
-            </Button>
-            <Button variant="contained" style={buttonStyles}>
-              <Link to="/categories" style={linkStyles}>Categories</Link>
-            </Button>
+              <Link to="/transactions" style={linkStyles}>
+                <Button variant="contained" style={buttonStyles}>Transactions</Button>
+              </Link>
+              <Link to="/months" style={linkStyles}>
+                <Button variant="contained" style={buttonStyles}>Months</Button>
+              </Link>
+              <Link to="/categories" style={linkStyles}>
+                <Button variant="contained" style={buttonStyles}>Categories</Button>
+              </Link>
           </Stack>  
         </Toolbar>
       </AppBar>
