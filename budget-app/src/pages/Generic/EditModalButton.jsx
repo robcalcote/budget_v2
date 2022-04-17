@@ -29,7 +29,8 @@ function EditModalButton(props) {
             <GenericModal
                 t={props.t}
                 m={props.m}
-                record={props.t || props.m}
+                c={props.c}
+                record={props.t || props.m || props.c}
                 edit={true}
                 open={openModal}
                 refresh={props.refresh}
