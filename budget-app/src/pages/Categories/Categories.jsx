@@ -1,4 +1,7 @@
 import React, { useState, useEffect } from "react";
+
+import Button from '@mui/material/Button';
+import GenericModal from '../Generic/GenericModal';
 import IconButton from '@mui/material/IconButton';
 import ModeEditIcon from '@mui/icons-material/ModeEdit';
 import Table from '@mui/material/Table';
@@ -9,8 +12,15 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 
+const buttonStyles = {
+	width: '100%',
+	margin: '5px'
+}
+
 function Categories() {
 	const [categories, setCategories] = useState([{}]);
+	const [openCreateModal, setOpenCreateModal] = useState(false);
+	const [refreshKey, setRefreshKey] = useState(0);
 
 	useEffect(() => {
 		fetch('/categories')
@@ -18,40 +28,59 @@ function Categories() {
 		.then(categories => {
 			setCategories(categories);
 		});
-	  }, []);
+	  }, [refreshKey]);
+
+	const handleClose = (() => {
+		setOpenCreateModal(false);
+	});
+
+	const handleOpen = (() => {
+		setOpenCreateModal(true);
+	});
 
 	return (
-		<TableContainer component={Paper}>
-			<Table sx={{ minWidth: 450 }} aria-label="simple table">
-			<TableHead>
-				<TableRow>
-				<TableCell>Description</TableCell>
-				<TableCell>Expense</TableCell>
-				<TableCell>Recurring</TableCell>
-				<TableCell align="right">Edit</TableCell>
-				</TableRow>
-			</TableHead>
-			<TableBody>
-				{categories.map((c, index) => (
-				<TableRow
-					key={index}
-					sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-				>
-					<TableCell component="th" scope="row">
-					{c.Description}
-					</TableCell>
-					<TableCell>{c.Expense === 1 ? "X" : null}</TableCell>
-					<TableCell>{c.Recurring === 1 ? "X" : null}</TableCell>
-					<TableCell align="right">
-						<IconButton aria-label="edit" size="small">
-							<ModeEditIcon fontSize="inherit" />
-						</IconButton>
-					</TableCell>
-				</TableRow>
-				))}
-			</TableBody>
-			</Table>
-		</TableContainer>
+		<>
+			<Button variant="outlined" style={buttonStyles} onClick={handleOpen}>
+				New Category
+			</Button>
+			<TableContainer component={Paper}>
+				<Table sx={{ minWidth: 450 }} aria-label="simple table">
+				<TableHead>
+					<TableRow>
+					<TableCell>Description</TableCell>
+					<TableCell>Expense</TableCell>
+					<TableCell>Recurring</TableCell>
+					<TableCell align="right">Edit</TableCell>
+					</TableRow>
+				</TableHead>
+				<TableBody>
+					{categories.map((c, index) => (
+					<TableRow
+						key={index}
+						sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+					>
+						<TableCell component="th" scope="row">
+						{c.Description}
+						</TableCell>
+						<TableCell>{c.Expense === 1 ? "X" : null}</TableCell>
+						<TableCell>{c.Recurring === 1 ? "X" : null}</TableCell>
+						<TableCell align="right">
+							<IconButton aria-label="edit" size="small">
+								<ModeEditIcon fontSize="inherit" />
+							</IconButton>
+						</TableCell>
+					</TableRow>
+					))}
+				</TableBody>
+				</Table>
+			</TableContainer>
+			<GenericModal
+				create={'category'}
+				open={openCreateModal}
+				refresh={setRefreshKey}
+				close={handleClose}
+			/>
+		</>
 	);
 };
 

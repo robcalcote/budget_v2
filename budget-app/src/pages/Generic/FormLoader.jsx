@@ -1,5 +1,6 @@
 import React from "react";
 
+import CreateCategoryForm from '../Categories/CreateCategoryForm';
 import CreateMonthForm from '../Months/CreateMonthForm';
 import CreateTransactionForm from '../Transactions/CreateTransactionForm';
 import EditMonthForm from '../Months/EditMonthForm';
@@ -11,6 +12,9 @@ function FormLoader(props) {
     }
     if (props.create === 'month') {
         return (<CreateMonthForm close={props.close} refresh={props.refresh} />);
+    }
+    if (props.create === 'category') {
+        return (<CreateCategoryForm close={props.close} refresh={props.refresh} />);
     }
     if (props.t) {
         return (<EditTransactionForm record={props.record} onClose={props.close} refresh={props.refresh} />);
